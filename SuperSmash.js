@@ -9,6 +9,7 @@ var title;//images
 var quotePic;
 var floweyPic;
 var glitchPic;
+var sansPic;
 var fawfulPic;//images
 var slideX = [0,0];
 var slideY = [0,0];
@@ -438,6 +439,7 @@ function setup() {
   fawfulPic = loadImage("Fawful.png");
   quotePic = loadImage("Quote.png");
   floweyPic = loadImage("Flowey.png");
+  sansPic = loadImage("sans.png");
   glitchPic = loadImage("Glitch.png");
 }
 
@@ -642,6 +644,7 @@ function draw() {
     image(quotePic,325,2);
     image(floweyPic,411,1,78,78);
     image(glitchPic,501,1,78,78);
+    image(sansPic,591,1,78,78);
     
     if(choose.one.x > 230 && choose.one.x < 310 && choose.one.y < 80){
       player[0].character = {
@@ -658,10 +661,16 @@ function draw() {
             pic: floweyPic
           }
         }else{
-          if(choose.one.x > 490 && choose.one.x < 570 && choose.one.y < 80){
+          if(choose.one.x > 500 && choose.one.x < 580 && choose.one.y < 80){
             player[0].character = {
               pic: glitchPic
             }
+          }else{
+            if(choose.one.x > 590 && choose.one.x < 670 && choose.one.y < 80){
+              player[0].character = {
+                pic: sansPic
+              }
+	          }
           }
         }
       }
@@ -682,9 +691,15 @@ function draw() {
             pic: floweyPic
           }
         }else{
-          if(choose.two.x > 490 && choose.two.x < 570 && choose.two.y < 80){
+          if(choose.two.x > 500 && choose.two.x < 580 && choose.two.y < 80){
             player[1].character = {
               pic: glitchPic
+            }
+          }else{
+            if(choose.two.x > 590 && choose.two.x < 670 && choose.two.y < 80){
+              player[1].character = {
+                pic: sansPic
+              }
             }
           }
         }
@@ -706,9 +721,15 @@ function draw() {
             pic: floweyPic
           }
         }else{
-          if(choose.three.x > 490 && choose.three.x < 570 && choose.three.y < 80){
+          if(choose.three.x > 500 && choose.three.x < 580 && choose.three.y < 80){
             player[2].character = {
               pic: glitchPic
+            }
+          }else{
+            if(choose.three.x > 590 && choose.three.x < 670 && choose.three.y < 80){
+              player[2].character = {
+                pic: sansPic
+              }
             }
           }
         }
@@ -730,9 +751,15 @@ function draw() {
             pic: floweyPic
           }
         }else{
-          if(choose.four.x > 490 && choose.four.x < 570 && choose.four.y < 80){
+          if(choose.four.x > 500 && choose.four.x < 580 && choose.four.y < 80){
             player[3].character = {
               pic: glitchPic
+            }
+          }else{
+            if(choose.four.x > 590 && choose.four.x < 670 && choose.four.y < 80){
+              player[3].character = {
+                pic: sansPic
+              }
             }
           }
         }
