@@ -1035,29 +1035,31 @@ function draw() {
           }
           if(keys[controls[i].attack] && player[i].attacking === false){
             player[i].attacking = true;
-            if(player[i].dir === 1){
-              attack.push({
-                x: player[i].x + 25,
-                y: player[i].y - 20,
-                w: 50,
-                h: 50,
-                time: 100,
-                player: i,
-                damage: 5,
-                launch: 0.3
-              });
-            }
-            if(player[i].dir === 2){
-              attack.push({
-                x: player[i].x - 75,
-                y: player[i].y - 20,
-                w: 50,
-                h: 50,
-                time: 100,
-                player: i,
-                damage: 5,
-                launch: 0.3
-              });
+            if(player[i].character.pic === quotePic){
+              if(player[i].dir === 1){
+                attack.push({
+                  x: player[i].x + 25,
+                  y: player[i].y - 20,
+                  w: 50,
+                  h: 50,
+                  time: 100,
+                  player: i,
+                  damage: 5,
+                  launch: 0.3
+                });
+              }
+              if(player[i].dir === 2){
+                attack.push({
+                  x: player[i].x - 75,
+                  y: player[i].y - 20,
+                  w: 50,
+                  h: 50,
+                  time: 100,
+                  player: i,
+                  damage: 5,
+                  launch: 0.3
+                });
+              }
             }
           }
         }
