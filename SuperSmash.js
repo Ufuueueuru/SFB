@@ -10,6 +10,7 @@ var quotePic;
 var floweyPic;
 var glitchPic;
 var sansPic;
+var balosPic;
 var fawfulPic;//images
 var slideX = [0,0];
 var slideY = [0,0];
@@ -440,6 +441,7 @@ function setup() {
   quotePic = loadImage("Quote.png");
   floweyPic = loadImage("Flowey.png");
   sansPic = loadImage("sans.png");
+  balosPic = loadImage("balos.png");
   glitchPic = loadImage("Glitch.png");
 }
 
@@ -645,6 +647,7 @@ function draw() {
     image(floweyPic,411,1,78,78);
     image(glitchPic,501,1,78,78);
     image(sansPic,591,1,78,78);
+    image(balosPic,231,91,78,78);
     
     if(choose.one.x > 230 && choose.one.x < 310 && choose.one.y < 80){
       player[0].character = {
@@ -670,7 +673,13 @@ function draw() {
               player[0].character = {
                 pic: sansPic
               }
-	          }
+	          }else{
+              if(choose.one.x > 230 && choose.one.x < 310 && choose.one.y > 90 && choose.one.y < 170){
+                player[0].character = {
+                  pic: balosPic
+                }
+              }
+            }
           }
         }
       }
@@ -699,6 +708,12 @@ function draw() {
             if(choose.two.x > 590 && choose.two.x < 670 && choose.two.y < 80){
               player[1].character = {
                 pic: sansPic
+              }
+            }else{
+              if(choose.two.x > 230 && choose.two.x < 310 && choose.two.y > 90 && choose.two.y < 170){
+                player[1].character = {
+                  pic: balosPic
+                }
               }
             }
           }
@@ -730,6 +745,12 @@ function draw() {
               player[2].character = {
                 pic: sansPic
               }
+            }else{
+              if(choose.three.x > 230 && choose.three.x < 310 && choose.three.y > 90 && choose.three.y < 170){
+                player[2].character = {
+                  pic: balosPic
+                }
+              }
             }
           }
         }
@@ -759,6 +780,12 @@ function draw() {
             if(choose.four.x > 590 && choose.four.x < 670 && choose.four.y < 80){
               player[3].character = {
                 pic: sansPic
+              }
+            }else{
+              if(choose.four.x > 230 && choose.four.x < 310 && choose.four.y > 90 && choose.four.y < 170){
+                player[3].character = {
+                  pic: balosPic
+                }
               }
             }
           }
