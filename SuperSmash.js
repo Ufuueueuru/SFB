@@ -1039,13 +1039,44 @@ function draw() {
               if(player[i].dir === 1){
                 attack.push({
                   x: player[i].x + 25,
+                  y: player[i].y - 10,
+                  w: 50,
+                  h: 25,
+                  time: 50,
+                  player: i,
+                  damage: 5,
+                  launch: 0.3,
+                  type: "gun",
+                  dir: 1
+                });
+              }
+              if(player[i].dir === 2){
+                attack.push({
+                  x: player[i].x - 75,
+                  y: player[i].y - 10,
+                  w: 50,
+                  h: 25,
+                  time: 50,
+                  player: i,
+                  damage: 5,
+                  launch: 0.3,
+                  type: "gun",
+                  dir: 2
+                });
+              }
+            }else{
+              if(player[i].dir === 1){
+                attack.push({
+                  x: player[i].x + 25,
                   y: player[i].y - 20,
                   w: 50,
                   h: 50,
                   time: 100,
                   player: i,
                   damage: 5,
-                  launch: 0.3
+                  launch: 0.3,
+                  type: "default",
+                  dir: 1
                 });
               }
               if(player[i].dir === 2){
@@ -1057,7 +1088,9 @@ function draw() {
                   time: 100,
                   player: i,
                   damage: 5,
-                  launch: 0.3
+                  launch: 0.3,
+                  type: "default",
+                  dir: 2
                 });
               }
             }
@@ -1094,6 +1127,14 @@ function draw() {
           if(attack[u].time <= 0){
             player[attack[u].player].attacking = false;
             attack.splice(u,1);
+          }
+          if(attack[u].type === "gun"){
+            if(attack[u].dir === 1){
+              attack[u].x += 5;
+            }
+            if(attack[u].dir === 2){
+              attack[u].x -= 5;
+            }
           }
         }
       }
