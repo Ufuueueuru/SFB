@@ -1,4 +1,3 @@
-/* @pjs preload="Title.png";*/
 var playerNum = 1;
 var keySelect = [false,0];
 var menu = 3;//0: main menu, 1: settings, 2: character select, 3: intro, 4: actual battle
@@ -1124,10 +1123,6 @@ function draw() {
               }
             }
           }
-          if(attack[u].time <= 0){
-            player[attack[u].player].attacking = false;
-            attack.splice(u,1);
-          }
           if(attack[u].type === "gun"){
             if(attack[u].dir === 1){
               attack[u].x += 5;
@@ -1135,6 +1130,10 @@ function draw() {
             if(attack[u].dir === 2){
               attack[u].x -= 5;
             }
+          }
+          if(attack[u].time <= 0){
+            player[attack[u].player].attacking = false;
+            attack.splice(u,1);
           }
         }
       }
