@@ -1048,7 +1048,7 @@ function draw() {
                 dir: 2
               });
               attack.push({
-                x: player[i].x - 75,
+                x: player[i].x - 50,
                 y: player[i].y - 10,
                 w: 25,
                 h: 25,
@@ -1060,7 +1060,7 @@ function draw() {
                 dir: 1
               });
               attack.push({
-                x: player[i].x - 25,
+                x: player[i].x - 13,
                 y: player[i].y - 50,
                 w: 25,
                 h: 25,
@@ -1081,8 +1081,8 @@ function draw() {
                     h: 25,
                     time: 40,
                     player: i,
-                    damage: 1,
-                    launch: 0.1,
+                    damage: 2,
+                    launch: 0.2,
                     type: "gun",
                     dir: 1
                   });
@@ -1095,8 +1095,8 @@ function draw() {
                     h: 25,
                     time: 40,
                     player: i,
-                    damage: 1,
-                    launch: 0.1,
+                    damage: 2,
+                    launch: 0.2,
                     type: "gun",
                     dir: 2
                   });
