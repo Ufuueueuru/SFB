@@ -1041,10 +1041,10 @@ function draw() {
                   y: player[i].y - 10,
                   w: 50,
                   h: 25,
-                  time: 50,
+                  time: 40,
                   player: i,
-                  damage: 5,
-                  launch: 0.3,
+                  damage: 1,
+                  launch: 0.1,
                   type: "gun",
                   dir: 1
                 });
@@ -1055,10 +1055,10 @@ function draw() {
                   y: player[i].y - 10,
                   w: 50,
                   h: 25,
-                  time: 50,
+                  time: 40,
                   player: i,
-                  damage: 5,
-                  launch: 0.3,
+                  damage: 1,
+                  launch: 0.1,
                   type: "gun",
                   dir: 2
                 });
