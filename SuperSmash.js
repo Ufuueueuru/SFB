@@ -1034,63 +1034,102 @@ function draw() {
           }
           if(keys[controls[i].attack] && player[i].attacking === false){
             player[i].attacking = true;
-            if(player[i].character.pic === quotePic){
-              if(player[i].dir === 1){
-                attack.push({
-                  x: player[i].x + 25,
-                  y: player[i].y - 10,
-                  w: 50,
-                  h: 25,
-                  time: 40,
-                  player: i,
-                  damage: 1,
-                  launch: 0.1,
-                  type: "gun",
-                  dir: 1
-                });
-              }
-              if(player[i].dir === 2){
-                attack.push({
-                  x: player[i].x - 75,
-                  y: player[i].y - 10,
-                  w: 50,
-                  h: 25,
-                  time: 40,
-                  player: i,
-                  damage: 1,
-                  launch: 0.1,
-                  type: "gun",
-                  dir: 2
-                });
-              }
+            if(player[i].character.pic === balosPic){
+              attack.push({
+                x: player[i].x + 25,
+                y: player[i].y - 10,
+                w: 25,
+                h: 25,
+                time: 20,
+                player: i,
+                damage: 6,
+                launch: 0.4,
+                type: "circle",
+                dir: 2
+              });
+              attack.push({
+                x: player[i].x - 75,
+                y: player[i].y - 10,
+                w: 25,
+                h: 25,
+                time: 20,
+                player: i,
+                damage: 6,
+                launch: 0.4,
+                type: "circle",
+                dir: 1
+              });
+              attack.push({
+                x: player[i].x - 25,
+                y: player[i].y - 50,
+                w: 25,
+                h: 25,
+                time: 20,
+                player: i,
+                damage: 6,
+                launch: 0.4,
+                type: "circle",
+                dir: 1
+              });
             }else{
-              if(player[i].dir === 1){
-                attack.push({
-                  x: player[i].x + 25,
-                  y: player[i].y - 20,
-                  w: 50,
-                  h: 50,
-                  time: 100,
-                  player: i,
-                  damage: 5,
-                  launch: 0.3,
-                  type: "default",
-                  dir: 1
-                });
-              }
-              if(player[i].dir === 2){
-                attack.push({
-                  x: player[i].x - 75,
-                  y: player[i].y - 20,
-                  w: 50,
-                  h: 50,
-                  time: 100,
-                  player: i,
-                  damage: 5,
-                  launch: 0.3,
-                  type: "default",
-                  dir: 2
-                });
+              if(player[i].character.pic === quotePic){
+                if(player[i].dir === 1){
+                  attack.push({
+                    x: player[i].x + 25,
+                    y: player[i].y - 10,
+                    w: 50,
+                    h: 25,
+                    time: 40,
+                    player: i,
+                    damage: 1,
+                    launch: 0.1,
+                    type: "gun",
+                    dir: 1
+                  });
+                }
+                if(player[i].dir === 2){
+                  attack.push({
+                    x: player[i].x - 75,
+                    y: player[i].y - 10,
+                    w: 50,
+                    h: 25,
+                    time: 40,
+                    player: i,
+                    damage: 1,
+                    launch: 0.1,
+                    type: "gun",
+                    dir: 2
+                  });
+                }
+              }else{
+                if(player[i].dir === 1){
+                  attack.push({
+                    x: player[i].x + 25,
+                    y: player[i].y - 20,
+                    w: 50,
+                    h: 50,
+                    time: 100,
+                    player: i,
+                    damage: 5,
+                    launch: 0.3,
+                    type: "default",
+                    dir: 1
+                  });
+                }
+                if(player[i].dir === 2){
+                  attack.push({
+                    x: player[i].x - 75,
+                    y: player[i].y - 20,
+                    w: 50,
+                    h: 50,
+                    time: 100,
+                    player: i,
+                    damage: 5,
+                    launch: 0.3,
+                    type: "default",
+                    dir: 2
+                  });
+                }
               }
             }
           }
