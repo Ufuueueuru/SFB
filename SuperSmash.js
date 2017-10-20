@@ -1303,7 +1303,7 @@ function draw() {
           fill(220,130,220,150);
         }
         rect(i * 900/picCount,450,900/picCount,50,10);
-        fill(100 + player[i].damage,100 - player[i].damage,100 - player[i].damage,200);
+        fill(50 + (player[i].damage * 2),50 - player[i].damage,50 - player[i].damage,200);
         text("Player "+ (i + 1),i * 900/picCount + (900/picCount)/2,460);
         text(round(player[i].damage) + "%",i * 900/picCount + (900/picCount)/2,490);
       }
