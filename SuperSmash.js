@@ -435,30 +435,34 @@ var player = [
 ];
 
 function balosAttack(index){//index
-  attack.push({
-	x: player[index].x + 35,
-	y: player[index].y - 10,
-	w: 25,
-	h: 25,
-	time: 5,
-	player: index,
-	damage: 2,
-	launch: 0.5,
-	type: "circle",
-	dir: 2
-  });
-  attack.push({
-	x: player[index].x - 60,
-	y: player[index].y - 10,
-	w: 25,
-	h: 25,
-	time: 5,
-	player: index,
-	damage: 2,
-	launch: 0.5,
-	type: "circle",
-	dir: 1
-  });
+  if(player[index].dir === 1){
+    attack.push({
+      x: player[index].x + 35,
+      y: player[index].y - 10,
+      w: 25,
+      h: 25,
+      time: 5,
+      player: index,
+      damage: 2,
+      launch: 0.5,
+      type: "circle",
+      dir: 1
+    });
+  }
+  if(player[index].dir === 2){
+    attack.push({
+      x: player[index].x - 60,
+      y: player[index].y - 10,
+      w: 25,
+      h: 25,
+      time: 5,
+      player: index,
+      damage: 2,
+      launch: 0.5,
+      type: "circle",
+      dir: 2
+    });
+  }
   attack.push({
 	x: player[index].x - 13,
 	y: player[index].y - 60,
