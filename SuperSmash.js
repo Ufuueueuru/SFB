@@ -546,10 +546,10 @@ function fawfulAttack(index) {
       y: player[index].y - 5,
       w: 10,
       h: 10,
-      time: 35,
+      time: 30,
       player: index,
-      damage: 7,
-      launch: 0.1,
+      damage: 6,
+      launch: 0.05,
       type: "gun",
       dir: 1
 	});
@@ -560,10 +560,10 @@ function fawfulAttack(index) {
 	  y: player[index].y - 5,
 	  w: 10,
 	  h: 10,
-	  time: 35,
+	  time: 30,
 	  player: index,
-	  damage: 7,
-	  launch: 0.1,
+	  damage: 6,
+	  launch: 0.05,
 	  type: "gun",
 	  dir: 2
 	});
