@@ -210,7 +210,7 @@ var keyCodes = [
   "-",//189
   ".",
   "/",//191
-  "grave\naccent",//192
+  "`",//192
   "?",//193
   "num .",//194
   "",//195
@@ -434,6 +434,68 @@ var player = [
   },
 ];
 
+function quoteAttack(index) {
+  if(player[index].dir === 1){
+	attack.push({
+      x: player[index].x + 25,
+      y: player[index].y - 10,
+      w: 30,
+      h: 25,
+      time: 40,
+      player: index,
+      damage: 3,
+      launch: 0.2,
+      type: "gun",
+      dir: 1
+	});
+  }
+  if(player[index].dir === 2){
+	attack.push({
+	  x: player[index].x - 55,
+	  y: player[index].y - 10,
+	  w: 30,
+	  h: 25,
+	  time: 40,
+	  player: index,
+	  damage: 3,
+	  launch: 0.2,
+	  type: "gun",
+	  dir: 2
+	});
+  }
+}
+
+function defaultAttack(index) {
+  if(player[index].dir === 1){
+	attack.push({
+	  x: player[index].x + 25,
+	  y: player[index].y - 20,
+	  w: 50,
+	  h: 50,
+	  time: 100,
+	  player: index,
+	  damage: 5,
+	  launch: 0.3,
+	  type: "default",
+	  dir: 1
+	});
+  }
+  if(player[i].dir === 2){
+	attack.push({
+	  x: player[index].x - 75,
+	  y: player[index].y - 20,
+	  w: 50,
+	  h: 50,
+	  time: 100,
+	  player: index,
+	  damage: 5,
+	  launch: 0.3,
+	  type: "default",
+	  dir: 2
+	});
+  }
+}
+
 function balosAttack(index){//index
   if(player[index].dir === 1){
     attack.push({
@@ -477,35 +539,36 @@ function balosAttack(index){//index
   });
 };
 
-function fawfulAttack(){
-  if(dir === 1){
-    attack.push({
-      x: x + 35,
-      y: y - 10,
-      w: 50,
-      h: 25,
-      time: 5,
-      player: i,
-      damage: 2,
-      launch: 0.5,
-      type: "",
+function fawfulAttack(index) {
+  if(player[index].dir === 1){
+	attack.push({
+      x: player[index].x + 25,
+      y: player[index].y - 5,
+      w: 10,
+      h: 10,
+      time: 35,
+      player: index,
+      damage: 7,
+      launch: 0.1,
+      type: "gun",
       dir: 1
-    });
-  }else{
-    attack.push({
-      x: x - 85,
-      y: y - 10,
-      w: 50,
-      h: 25,
-      time: 5,
-      player: i,
-      damage: 2,
-      launch: 0.5,
-      type: "",
-      dir: 2
-    });
+	});
   }
-};
+  if(player[index].dir === 2){
+	attack.push({
+	  x: player[index].x - 35,
+	  y: player[index].y - 5,
+	  w: 10,
+	  h: 10,
+	  time: 35,
+	  player: index,
+	  damage: 7,
+	  launch: 0.1,
+	  type: "gun",
+	  dir: 2
+	});
+  }
+}
 
 function setup() {
   createCanvas(900,500);
@@ -706,7 +769,7 @@ function draw() {
       fill(0,0,0,90);
       rect(0,0,900,500);
       fill(255,255,255);
-      text("Type any key/n(Escape to cancel)",450,250);
+      text("Type any key\n(Escape to cancel)",450,250);
     }
   }
   if(menu === 2){//character select
@@ -1181,62 +1244,12 @@ function draw() {
               balosAttack(i);
             }else{
               if(player[i].character.pic === quotePic){
-                if(player[i].dir === 1){
-                  attack.push({
-                    x: player[i].x + 25,
-                    y: player[i].y - 10,
-                    w: 50,
-                    h: 25,
-                    time: 40,
-                    player: i,
-                    damage: 3,
-                    launch: 0.2,
-                    type: "gun",
-                    dir: 1
-                  });
-                }
-                if(player[i].dir === 2){
-                  attack.push({
-                    x: player[i].x - 75,
-                    y: player[i].y - 10,
-                    w: 50,
-                    h: 25,
-                    time: 40,
-                    player: i,
-                    damage: 3,
-                    launch: 0.2,
-                    type: "gun",
-                    dir: 2
-                  });
-                }
+                quoteAttack(i);
               }else{
-                if(player[i].dir === 1){
-                  attack.push({
-                    x: player[i].x + 25,
-                    y: player[i].y - 20,
-                    w: 50,
-                    h: 50,
-                    time: 100,
-                    player: i,
-                    damage: 5,
-                    launch: 0.3,
-                    type: "default",
-                    dir: 1
-                  });
-                }
-                if(player[i].dir === 2){
-                  attack.push({
-                    x: player[i].x - 75,
-                    y: player[i].y - 20,
-                    w: 50,
-                    h: 50,
-                    time: 100,
-                    player: i,
-                    damage: 5,
-                    launch: 0.3,
-                    type: "default",
-                    dir: 2
-                  });
+                if(player[i].character.pic === fawfulPic){
+                  fawfulAttack(i);
+                }else {
+                  defaultAttack(i);
                 }
               }
             }
