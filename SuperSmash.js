@@ -1024,14 +1024,14 @@ function draw() {
         trans.count ++;
         trans.x += player[0].x;
         trans.y += player[0].y;
-        if(player[0].x > 300/trans.scale){
-          trans.scale -= 0.04;
+        if(player[0].x > 350/trans.scale){
+          trans.scale -= 0.004;
         }else {
-          if(player[0].x < -300/trans.scale){
-            trans.scale -= 0.04;
+          if(player[0].x < -350/trans.scale){
+            trans.scale -= 0.004;
           }else {
             if(player[0].x < 100/trans.scale && player[0].x > -100/trans.scale){
-              trans.scale += 0.01;
+              trans.scale += 0.001;
             }
           }
         }
@@ -1040,14 +1040,14 @@ function draw() {
         trans.count ++;
         trans.x += player[1].x;
         trans.y += player[1].y;
-        if(player[1].x > 300/trans.scale){
-          trans.scale -= 0.04;
+        if(player[1].x > 350/trans.scale){
+          trans.scale -= 0.004;
         }else {
-          if(player[1].x < -300/trans.scale){
-            trans.scale -= 0.04;
+          if(player[1].x < -350/trans.scale){
+            trans.scale -= 0.004;
           }else {
             if(player[1].x < 100/trans.scale && player[1].x > -100/trans.scale){
-              trans.scale += 0.01;
+              trans.scale += 0.001;
             }
           }
         }
@@ -1056,14 +1056,14 @@ function draw() {
         trans.count ++;
         trans.x += player[2].x;
         trans.y += player[2].y;
-        if(player[2].x > 300/trans.scale){
-          trans.scale -= 0.04;
+        if(player[2].x > 350/trans.scale){
+          trans.scale -= 0.004;
         }else {
-          if(player[2].x < -300/trans.scale){
-            trans.scale -= 0.04;
+          if(player[2].x < -350/trans.scale){
+            trans.scale -= 0.004;
           }else {
             if(player[2].x < 100/trans.scale && player[2].x > -100/trans.scale){
-              trans.scale += 0.01;
+              trans.scale += 0.001;
             }
           }
         }
@@ -1072,14 +1072,14 @@ function draw() {
         trans.count ++;
         trans.x += player[3].x;
         trans.y += player[3].y;
-        if(player[3].x > 300/trans.scale){
-          trans.scale -= 0.04;
+        if(player[3].x > 350/trans.scale){
+          trans.scale -= 0.004;
         }else {
-          if(player[3].x < -300/trans.scale){
-            trans.scale -= 0.04;
+          if(player[3].x < -350/trans.scale){
+            trans.scale -= 0.004;
           }else {
             if(player[3].x < 100/trans.scale && player[3].x > -100/trans.scale){
-              trans.scale += 0.01;
+              trans.scale += 0.001;
             }
           }
         }
