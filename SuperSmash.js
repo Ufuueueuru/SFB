@@ -1,3 +1,4 @@
+var trans = {x: 0, y: 0, scale: 1, count: 0};
 var playerNum = 1;
 var keySelect = [false,0];
 var menu = 3;//0: main menu, 1: settings, 2: character select, 3: intro, 4: actual battle
@@ -433,6 +434,75 @@ var player = [
   },
 ];
 
+function balosAttack(index){//index
+  attack.push({
+	x: player[index].x + 35,
+	y: player[index].y - 10,
+	w: 25,
+	h: 25,
+	time: 5,
+	player: index,
+	damage: 2,
+	launch: 0.5,
+	type: "circle",
+	dir: 2
+  });
+  attack.push({
+	x: player[index].x - 60,
+	y: player[index].y - 10,
+	w: 25,
+	h: 25,
+	time: 5,
+	player: index,
+	damage: 2,
+	launch: 0.5,
+	type: "circle",
+	dir: 1
+  });
+  attack.push({
+	x: player[index].x - 13,
+	y: player[index].y - 60,
+	w: 25,
+	h: 25,
+	time: 5,
+	player: index,
+	damage: 2,
+	launch: 0.5,
+	type: "circle",
+	dir: 1
+  });
+};
+
+function fawfulAttack(){
+  if(dir === 1){
+    attack.push({
+      x: x + 35,
+      y: y - 10,
+      w: 50,
+      h: 25,
+      time: 5,
+      player: i,
+      damage: 2,
+      launch: 0.5,
+      type: "",
+      dir: 1
+    });
+  }else{
+    attack.push({
+      x: x - 85,
+      y: y - 10,
+      w: 50,
+      h: 25,
+      time: 5,
+      player: i,
+      damage: 2,
+      launch: 0.5,
+      type: "",
+      dir: 2
+    });
+  }
+};
+
 function setup() {
   createCanvas(900,500);
   title = loadImage("Title.png");
@@ -546,7 +616,7 @@ function draw() {
     pop();    
     fill(255,255,255);
     textSize(35);
-    text("Version 0.0.1 Pre",450,350);
+    text("Version 0.0.2 Pre",450,350);
     textSize(20);
     text("All characters belong to Nintendo, Studio Pixel, or Toby Fox",450,480);
   }
@@ -844,7 +914,7 @@ function draw() {
     }else{
       text("CPU 4",780,470);
     }
-    choose.place = false
+    choose.place = false;
     fill(220,130,130);
     ellipse(choose.one.x,choose.one.y,50,50);//
     if(dist(mouseX,mouseY,choose.one.x,choose.one.y) < 25 && mouseIsPressed && choose.place === false){
@@ -946,9 +1016,78 @@ function draw() {
   if(menu === 4){//actually in the battle
     fill(255,255,255);
     rect(-1,-1,902,502);
-    if(pause === false){ 
+    if(pause === false){
+      trans.x = 0;
+      trans.y = 0;
+      trans.count = 0;
+      if(player[0].character.pic !== undefined){
+        trans.count ++;
+        trans.x += player[0].x;
+        trans.y += player[0].y;
+        if(player[0].x > 300/trans.scale){
+          trans.scale -= 0.04;
+        }else {
+          if(player[0].x < -300/trans.scale){
+            trans.scale -= 0.04;
+          }else {
+            if(player[0].x < 100/trans.scale && player[0].x > -100/trans.scale){
+              trans.scale += 0.01;
+            }
+          }
+        }
+      }
+      if(player[1].character.pic !== undefined){
+        trans.count ++;
+        trans.x += player[1].x;
+        trans.y += player[1].y;
+        if(player[1].x > 300/trans.scale){
+          trans.scale -= 0.04;
+        }else {
+          if(player[1].x < -300/trans.scale){
+            trans.scale -= 0.04;
+          }else {
+            if(player[1].x < 100/trans.scale && player[1].x > -100/trans.scale){
+              trans.scale += 0.01;
+            }
+          }
+        }
+      }
+      if(player[2].character.pic !== undefined){
+        trans.count ++;
+        trans.x += player[2].x;
+        trans.y += player[2].y;
+        if(player[2].x > 300/trans.scale){
+          trans.scale -= 0.04;
+        }else {
+          if(player[2].x < -300/trans.scale){
+            trans.scale -= 0.04;
+          }else {
+            if(player[2].x < 100/trans.scale && player[2].x > -100/trans.scale){
+              trans.scale += 0.01;
+            }
+          }
+        }
+      }
+      if(player[3].character.pic !== undefined){
+        trans.count ++;
+        trans.x += player[3].x;
+        trans.y += player[3].y;
+        if(player[3].x > 300/trans.scale){
+          trans.scale -= 0.04;
+        }else {
+          if(player[3].x < -300/trans.scale){
+            trans.scale -= 0.04;
+          }else {
+            if(player[3].x < 100/trans.scale && player[3].x > -100/trans.scale){
+              trans.scale += 0.01;
+            }
+          }
+        }
+      }
       push();
-      translate(450,250);
+      translate(450 - (trans.x)/trans.count,250 - (trans.y)/(trans.count*2));
+      push();
+      scale(constrain(trans.scale*(9/10), 0.2, 1.5));
       if(arena === "classic"){
         fill(0,0,0);
         rect(-225,0,450,200);
@@ -993,7 +1132,7 @@ function draw() {
             player[i].xVel --;
             player[i].dir = 2;
           }
-    if(!(player[i].x > -250 && player[i].x < 250 && player[i].y > -30 && player[i].y < 225)){
+    	  if(!(player[i].x > -250 && player[i].x < 250 && player[i].y > -30 && player[i].y < 225)){
             player[i].yVel += 0.4;
             if(player[i].jump && keys[controls[i].up] && player[i].yVel > -2 && player[i].attacking === false){
               player[i].yVel = -7;
@@ -1026,7 +1165,7 @@ function draw() {
           }
           if(player[i].y > 750){
             player[i].damage = 0;
-            player[i].inv = 100;
+            player[i].inv = 50;
             player[i].x = 0;
             player[i].y = -30;
             player[i].yVel = 0;
@@ -1035,42 +1174,7 @@ function draw() {
           if(keys[controls[i].attack] && player[i].attacking === false){
             player[i].attacking = true;
             if(player[i].character.pic === balosPic){
-              attack.push({
-                x: player[i].x + 25,
-                y: player[i].y - 10,
-                w: 25,
-                h: 25,
-                time: 20,
-                player: i,
-                damage: 6,
-                launch: 0.4,
-                type: "circle",
-                dir: 2
-              });
-              attack.push({
-                x: player[i].x - 50,
-                y: player[i].y - 10,
-                w: 25,
-                h: 25,
-                time: 20,
-                player: i,
-                damage: 6,
-                launch: 0.4,
-                type: "circle",
-                dir: 1
-              });
-              attack.push({
-                x: player[i].x - 13,
-                y: player[i].y - 50,
-                w: 25,
-                h: 25,
-                time: 20,
-                player: i,
-                damage: 6,
-                launch: 0.4,
-                type: "circle",
-                dir: 1
-              });
+              balosAttack(i);
             }else{
               if(player[i].character.pic === quotePic){
                 if(player[i].dir === 1){
@@ -1081,7 +1185,7 @@ function draw() {
                     h: 25,
                     time: 40,
                     player: i,
-                    damage: 2,
+                    damage: 3,
                     launch: 0.2,
                     type: "gun",
                     dir: 1
@@ -1095,7 +1199,7 @@ function draw() {
                     h: 25,
                     time: 40,
                     player: i,
-                    damage: 2,
+                    damage: 3,
                     launch: 0.2,
                     type: "gun",
                     dir: 2
@@ -1148,7 +1252,7 @@ function draw() {
                 player[i].xVel += player[i].damage * 2 * attack[u].launch;
                 player[i].yVel -= player[i].damage / 2 * attack[u].launch;
                 attack[u].time = 0;
-                player[i].inv = 50;
+                player[i].inv = 25;
               }
             }else{
               if(player[i].x < attack[u].x + attack[u].w/2 && i !== attack[u].player){
@@ -1157,7 +1261,7 @@ function draw() {
                   player[i].xVel -= player[i].damage * 2 * attack[u].launch;
                   player[i].yVel -= player[i].damage / 2 * attack[u].launch;
                   attack[u].time = 0;
-                  player[i].inv = 50;
+                  player[i].inv = 25;
                 }
               }
             }
@@ -1178,6 +1282,8 @@ function draw() {
       }
       imageMode(CORNERS);
       pop();
+      pop();
+      
       textSize(28);
       for(var i = 0;i < picCount;i ++){
         if(i === 0){
