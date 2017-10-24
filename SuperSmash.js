@@ -480,7 +480,7 @@ function defaultAttack(index) {
 	  dir: 1
 	});
   }
-  if(player[i].dir === 2){
+  if(player[index].dir === 2){
 	attack.push({
 	  x: player[index].x - 75,
 	  y: player[index].y - 20,
@@ -546,10 +546,10 @@ function fawfulAttack(index) {
       y: player[index].y - 5,
       w: 10,
       h: 10,
-      time: 30,
+      time: 35,
       player: index,
-      damage: 6,
-      launch: 0.05,
+      damage: 7,
+      launch: 0.1,
       type: "gun",
       dir: 1
 	});
@@ -560,10 +560,10 @@ function fawfulAttack(index) {
 	  y: player[index].y - 5,
 	  w: 10,
 	  h: 10,
-	  time: 30,
+	  time: 35,
 	  player: index,
-	  damage: 6,
-	  launch: 0.05,
+	  damage: 7,
+	  launch: 0.1,
 	  type: "gun",
 	  dir: 2
 	});
