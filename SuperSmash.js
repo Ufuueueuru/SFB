@@ -1246,7 +1246,7 @@ function draw() {
             player[i].yVel = 0;
             player[i].xVel = 0;
           }
-          if(keys[controls[i].attack] && player[i].attacking === false){
+          if(keys[controls[i].attack] && player[i].attacking === false && !keys[controls[i].shield]){
             player[i].attacking = true;
             if(player[i].character.pic === balosPic){
               balosAttack(i);
