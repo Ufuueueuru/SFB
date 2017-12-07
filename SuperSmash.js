@@ -1163,6 +1163,14 @@ function draw() {
       picCount = 0;
       for(var i = 0;i < player.length;i ++){
         if(player[i].character.pic !== undefined){
+					if(keys[controls[i].shield]) {
+						fill(50, 50, 200, 100);
+						stroke(50, 50, 230, 120);
+						ellipse(player[i].x, player[i].y, 30, 30);
+						noFill();
+						stroke(150, 150, 255, 150);
+						ellipse(player[i].x, player[i].y, 30 % frameCount, 30 % frameCount);
+					}
           if(player[i].inv > 0){
             player[i].inv --;
           }
@@ -1262,7 +1270,7 @@ function draw() {
           fill(0,0,0);
           attack[u].time --;
           rect(attack[u].x,attack[u].y,attack[u].w,attack[u].h);
-          if(attack[u].x + attack[u].w > player[i].x - 25 && attack[u].x < player[i].x + 25 && attack[u].y + attack[u].h > player[i].y - 30 && attack[u].y < player[i].y + 30){
+          if(!keys[controls[i].shield] && attack[u].x + attack[u].w > player[i].x - 25 && attack[u].x < player[i].x + 25 && attack[u].y + attack[u].h > player[i].y - 30 && attack[u].y < player[i].y + 30){
             if(player[i].x >= attack[u].x + attack[u].w/2 && i !== attack[u].player){
               if(player[i].inv < 1){
                 player[i].damage += attack[u].damage;
