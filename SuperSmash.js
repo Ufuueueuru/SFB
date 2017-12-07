@@ -1163,14 +1163,6 @@ function draw() {
       picCount = 0;
       for(var i = 0;i < player.length;i ++){
         if(player[i].character.pic !== undefined){
-					if(keys[controls[i].shield]) {
-						fill(50, 50, 200, 100);
-						stroke(50, 50, 230, 120);
-						ellipse(player[i].x, player[i].y, 30, 30);
-						noFill();
-						stroke(150, 150, 255, 150);
-						ellipse(player[i].x, player[i].y, 30 % frameCount, 30 % frameCount);
-					}
           if(player[i].inv > 0){
             player[i].inv --;
           }
@@ -1178,6 +1170,14 @@ function draw() {
           if(player[i].inv < 1 || player[i].inv % 2 === 0){
             image(player[i].character.pic,player[i].x,player[i].y,50,60);
           }
+					if(keys[controls[i].shield]) {
+						fill(50, 50, 200, 100);
+						stroke(50, 50, 230, 120);
+						ellipse(player[i].x, player[i].y, 40, 40);
+						fill(130, 130, 255, 100);
+						stroke(150, 150, 255, 150);
+						ellipse(player[i].x, player[i].y, frameCount % 40, frameCount % 40);
+					}
           if(i === 0){
             fill(220,130,130);
           }
@@ -1199,17 +1199,17 @@ function draw() {
           }
           player[i].x += player[i].xVel;
           player[i].y += player[i].yVel;
-          if(keys[controls[i].right] && player[i].attacking === false && player[i].xVel < 2.5){
+          if(keys[controls[i].right] && player[i].attacking === false && player[i].xVel < 2.5 && !keys[controls[i].shield]){
             player[i].xVel ++;
             player[i].dir = 1;
           }
-          if(keys[controls[i].left] && player[i].attacking === false && player[i].xVel > -2.5){
+          if(keys[controls[i].left] && player[i].attacking === false && player[i].xVel > -2.5 && !keys[controls[i].shield]){
             player[i].xVel --;
             player[i].dir = 2;
           }
     	  if(!(player[i].x > -250 && player[i].x < 250 && player[i].y > -30 && player[i].y < 225)){
             player[i].yVel += 0.4;
-            if(player[i].jump && keys[controls[i].up] && player[i].yVel > -2 && player[i].attacking === false){
+            if(player[i].jump && keys[controls[i].up] && player[i].yVel > -2 && player[i].attacking === false && !keys[controls[i].shield]){
               player[i].yVel = -7;
               player[i].jump = false;
             }
@@ -1219,7 +1219,7 @@ function draw() {
             if(player[i].y + player[i].yVel <= -30){
               player[i].yVel = 0;
             }
-            if(keys[controls[i].up] && player[i].attacking === false){
+            if(keys[controls[i].up] && player[i].attacking === false && !keys[controls[i].shield]){
               player[i].yVel -= 7;
               player[i].jump = true;
             }
