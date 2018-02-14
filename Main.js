@@ -1,575 +1,3 @@
-var trans = {x: 0, y: 0, scale: 1, count: 0};
-var playerNum = 1;
-var keySelect = [false,0];
-var menu = 3;//0: main menu, 1: settings, 2: character select, 3: intro, 4: actual battle
-var arena = "classic";//what arena you are in
-var keys = [];
-var fire = [];
-var title;//images
-var quotePic;
-var floweyPic;
-var glitchPic;
-var sansPic;
-var balosPic;
-var fawfulPic;//images
-var slideX = [0,0];
-var slideY = [0,0];
-var loading = 0;
-var picCount = 0;
-var pause = false;
-var keyCodes = [
-  "",//0
-  "",//1
-  "",//2
-  "break",//3
-  "",//4
-  "",//5
-  "",//6
-  "",//7
-  "backspace",//8
-  "tab",//9
-  "",//10
-  "",//11
-  "clear",//12
-  "enter",//13
-  "",//14
-  "",//15
-  "shift",//16
-  "ctrl",//17
-  "alt",//18
-  "pause/break",//19
-  "caps\nlock",//20
-  "",//21
-  "",//22
-  "",//23
-  "",//24
-  "",//25
-  "",//26
-  "escape",//27
-  "conversion",//28
-  "non-conversion",//29
-  "",//30
-  "",//31
-  "spacebar",//32
-  "page\nup",//33
-  "page\ndown",//34
-  "end",//35
-  "home ",//36
-  "left",//37
-  "up",//36
-  "right",//39
-  "down",//40
-  "select",//41
-  "print",
-  "execute",//43
-  "Print\nScreen",
-  "insert ",//45
-  "delete",
-  "",//47
-  "0",//48
-  "1",//49
-  "2",
-  "3",
-  "4",//52
-  "5",
-  "6",
-  "7",//55
-  "8",
-  "9",//57
-  ":",
-  ";",//59
-  "<",//60
-  "=",//61
-  "",//62
-  "ß",
-  "@",//64
-  "a",
-  "b",//66
-  "c",
-  "d",//68
-  "e",//69
-  "f",
-  "g",//71
-  "h",
-  "i",
-  "j",//74
-  "k",
-  "l",//76
-  "m",
-  "n",//78
-  "o",
-  "p",//80
-  "q",
-  "r",//82
-  "s",
-  "t",//84
-  "u",
-  "v",//86
-  "w",
-  "x",//88
-  "y",
-  "z",//90
-  "Left ⌘",//91
-  "right\nwindow\nkey",
-  "Right ⌘",//93
-  "",//94
-  "",//95
-  "num\n0",
-  "num\n1",//97
-  "num\n2",
-  "num\n3",//99
-  "num\n4",
-  "num\n5",//101
-  "num\n6",
-  "num\n7",//103
-  "num\n8",
-  "num\n9",//105
-  "*",
-  "+",//107
-  "num\n.",
-  "-",//109
-  ".",
-  "/",//111
-  "f1",
-  "f2",//113
-  "f3",
-  "f4",//115
-  "f5",
-  "f6",//117
-  "f7",
-  "f8",//119
-  "f9",
-  "f10",//121
-  "f11",
-  "f12",
-  "f13",//124
-  "f14",
-  "f15",//126
-  "f16",
-  "f17",//128
-  "f18",
-  "f19",//130
-  "f20",
-  "f21",//132
-  "f22",
-  "f23",//134
-  "f24",
-  "",//136
-  "",//137
-  "",//138
-  "",//139
-  "",//140
-  "",//141
-  "",//142
-  "",//143
-  "num\nlock",//144
-  "scroll\nlock",
-  "",//146
-  "",//147
-  "",//148
-  "",//149
-  "",//150
-  "",//151
-  "",//152
-  "",//153
-  "",//154
-  "",//155
-  "",//156
-  "",//157
-  "",//158
-  "",//159
-  "^",
-  "!",//161
-  "#",
-  "$",//163
-  "ù",//164
-  "page\nbackward",//165
-  "page\nforward",//166
-  "",//167
-  "",//168
-  ")",//169
-  "*",//170
-  "~ + * key",//171
-  "",//172
-  "mute/\nunmute",
-  "decrease\nvolume\nlevel",//174
-  "increase\nvolume\nlevel",
-  "next",//176
-  "previous",
-  "stop",//178
-  "play/\npause",
-  "e-mail",//180
-  "mute/\nunmute",
-  "decrease\nvolume",//182
-  "increase\nvolume",//183
-  "",//184
-  "",//185
-  ";",//186
-  "=",//187
-  ",",
-  "-",//189
-  ".",
-  "/",//191
-  "`",//192
-  "?",//193
-  "num .",//194
-  "",//195
-  "",//196
-  "",//197
-  "",//198
-  "",//199
-  "",//200
-  "",//201
-  "",//202
-  "",//203
-  "",//204
-  "",//205
-  "",//206
-  "",//207
-  "",//208
-  "",//209
-  "",//210
-  "",//211
-  "",//212
-  "",//213
-  "",//214
-  "",//215
-  "",//216
-  "",//217
-  "",//218
-  "[",//219
-  "\\",//220
-  "]",
-  "'",//222
-  "`",//223
-  "⌘",//224
-  "altgr",
-  "< /git >",//226
-  "",//227
-  "",//228
-  "",//229
-  "GNOME",//230
-  "ç",
-  "",//232
-  "XF86Forward",
-  "XF86Back",//234
-  "",
-  "",//236
-  "",
-  "",//238
-  "",
-  "alphanumeric",//240
-  "",
-  "hiragana/katakana",//242
-  "half-width/full-width",
-  "kanji",//244
-  "",//245
-  "",//246
-  "",
-  "",//248
-  "",
-  "",//250
-  "",//251
-  "",//252
-  "",//253
-  "none",//254
-  "toggle touchpad"//255
-];
-var choose = {
-  place: true,
-  one: {
-    x: 120,
-    y: 380
-  },
-  two: {
-    x: 340,
-    y: 380
-  },
-  three: {
-    x: 560,
-    y: 380
-  },
-  four: {
-    x: 780,
-    y: 380
-  }
-}
-var controls = [
-  {
-    up: 38,
-    left: 37,
-    down: 40,
-    right: 39,
-    attack: 90,
-    special: 88,
-    shield: 67,
-    pause: 32
-  },
-  {
-    up: 87,
-    left: 65,
-    down: 83,
-    right: 68,
-    attack: 70,
-    special: 71,
-    shield: 72,
-    pause: 32
-  },
-  {
-    up: 254,
-    left: 254,
-    down: 254,
-    right: 254,
-    attack: 254,
-    special: 254,
-    shield: 254,
-    pause: 254
-  },
-  {
-    up: 254,
-    left: 254,
-    down: 254,
-    right: 254,
-    attack: 254,
-    special: 254,
-    shield: 254,
-    pause: 254
-  }
-];
-function keyButton(x,y,inp){
-  fill(70,70,70);//one button
-  rect(x,y,100,100,10);
-  fill(0,0,0);
-  rect(x + 10,y + 10,80,80,10);//one button
-  fill(255,255,255);
-  textSize(18);
-  text(keyCodes[inp],x + 50,y + 50);
-}
-function backButton(){
-  textSize(45);
-  fill(255,90,90);
-  rect(800,0,100,100);
-  fill(0,0,0);
-  text("Back",850,50);
-  if(mouseX > 800 && mouseY < 100 && mouseIsPressed){
-    menu = 0;
-    fire = [];
-  }
-}
-var attack = [
-  {
-    x: 0,
-    y: 0,
-    w: 0,
-    h: 0,
-    time: 0,
-    player: 0,
-    damage: 0,
-    launch: 0
-  }
-];
-var player = [
-  {
-    x: 0,
-    y: 0,
-    cpu: false,
-    damage: 0,
-    xVel: 0,
-    yVel: 0,
-    look: 0,//0: neither 1: up 2: down
-    dir: 1,//1: right 2: left
-    attacking: false,
-    inv: 0,
-    character: {
-      pic: undefined,
-      
-    }
-  },
-  {
-    x: 0,
-    y: 0,
-    cpu: true,
-    damage: 0,
-    xVel: 0,
-    yVel: 0,
-    look: 0,
-    dir: 1,
-    attacking: false,
-    inv: 0,
-    character: {
-      pic: undefined,
-      
-    }
-  },
-  {
-    x: 0,
-    y: 0,
-    cpu: true,
-    damage: 0,
-    xVel: 0,
-    yVel: 0,
-    look: 0,
-    dir: 1,
-    attacking: false,
-    inv: 0,
-    character: {
-      pic: undefined,
-      
-    }
-  },
-  {
-    x: 0,
-    y: 0,
-    cpu: true,
-    damage: 0,
-    xVel: 0,
-    yVel: 0,
-    look: 0,
-    dir: 1,
-    attacking: false,
-    inv: 0,
-    character: {
-      pic: undefined,
-    }
-  },
-];
-
-function quoteAttack(index) {
-  if(player[index].dir === 1){
-	attack.push({
-      x: player[index].x + 25,
-      y: player[index].y - 10,
-      w: 30,
-      h: 25,
-      time: 40,
-      player: index,
-      damage: 3,
-      launch: 0.2,
-      type: "gun",
-      dir: 1
-	});
-  }
-  if(player[index].dir === 2){
-	attack.push({
-	  x: player[index].x - 55,
-	  y: player[index].y - 10,
-	  w: 30,
-	  h: 25,
-	  time: 40,
-	  player: index,
-	  damage: 3,
-	  launch: 0.2,
-	  type: "gun",
-	  dir: 2
-	});
-  }
-}
-
-function defaultAttack(index) {
-  if(player[index].dir === 1){
-	attack.push({
-	  x: player[index].x + 25,
-	  y: player[index].y - 20,
-	  w: 50,
-	  h: 50,
-	  time: 100,
-	  player: index,
-	  damage: 5,
-	  launch: 0.3,
-	  type: "default",
-	  dir: 1
-	});
-  }
-  if(player[index].dir === 2){
-	attack.push({
-	  x: player[index].x - 75,
-	  y: player[index].y - 20,
-	  w: 50,
-	  h: 50,
-	  time: 100,
-	  player: index,
-	  damage: 5,
-	  launch: 0.3,
-	  type: "default",
-	  dir: 2
-	});
-  }
-}
-
-function balosAttack(index){//index
-  if(player[index].dir === 1){
-    attack.push({
-      x: player[index].x + 35,
-      y: player[index].y - 10,
-      w: 25,
-      h: 25,
-      time: 5,
-      player: index,
-      damage: 2,
-      launch: 0.5,
-      type: "circle",
-      dir: 1
-    });
-  }
-  if(player[index].dir === 2){
-    attack.push({
-      x: player[index].x - 60,
-      y: player[index].y - 10,
-      w: 25,
-      h: 25,
-      time: 5,
-      player: index,
-      damage: 2,
-      launch: 0.5,
-      type: "circle",
-      dir: 2
-    });
-  }
-  attack.push({
-	x: player[index].x - 13,
-	y: player[index].y - 60,
-	w: 25,
-	h: 25,
-	time: 5,
-	player: index,
-	damage: 2,
-	launch: 0.5,
-	type: "circle",
-	dir: 1
-  });
-};
-
-function fawfulAttack(index) {
-  if(player[index].dir === 1){
-	attack.push({
-      x: player[index].x + 25,
-      y: player[index].y - 5,
-      w: 10,
-      h: 10,
-      time: 35,
-      player: index,
-      damage: 7,
-      launch: 0.1,
-      type: "gun",
-      dir: 1
-	});
-  }
-  if(player[index].dir === 2){
-	attack.push({
-	  x: player[index].x - 35,
-	  y: player[index].y - 5,
-	  w: 10,
-	  h: 10,
-	  time: 35,
-	  player: index,
-	  damage: 7,
-	  launch: 0.1,
-	  type: "gun",
-	  dir: 2
-	});
-  }
-}
-
 function setup() {
   createCanvas(900,500);
   title = loadImage("Title.png");
@@ -664,7 +92,7 @@ function draw() {
       slideY[1] = 0;
       slideX[1] = 0;
     }
-	push();
+		push();
     translate(300 + slideX[1],0 + slideY[1]);
     fill(230,40,40);
     ellipse(400,350,100,100);
@@ -786,34 +214,22 @@ function draw() {
     image(balosPic,231,91,78,78);
     
     if(choose.one.x > 230 && choose.one.x < 310 && choose.one.y < 80){
-      player[0].character = {
-        pic: fawfulPic
-      }
+      player[0].character = new Character(fawfulPic);
     }else{
       if(choose.one.x > 320 && choose.one.x < 400 && choose.one.y < 80){
-        player[0].character = {
-          pic: quotePic
-        }
+        player[0].character = new Character(quotePic);
       }else{
         if(choose.one.x > 410 && choose.one.x < 490 && choose.one.y < 80){
-          player[0].character = {
-            pic: floweyPic
-          }
+          player[0].character = new Character(floweyPic);
         }else{
           if(choose.one.x > 500 && choose.one.x < 580 && choose.one.y < 80){
-            player[0].character = {
-              pic: glitchPic
-            }
+            player[0].character = new Character(glitchPic);
           }else{
             if(choose.one.x > 590 && choose.one.x < 670 && choose.one.y < 80){
-              player[0].character = {
-                pic: sansPic
-              }
+              player[0].character = new Character(sansPic);
 	          }else{
               if(choose.one.x > 230 && choose.one.x < 310 && choose.one.y > 90 && choose.one.y < 170){
-                player[0].character = {
-                  pic: balosPic
-                }
+                player[0].character = new Character(balosPic);
               }
             }
           }
@@ -822,34 +238,22 @@ function draw() {
     }
     
     if(choose.two.x > 230 && choose.two.x < 310 && choose.two.y < 80){
-      player[1].character = {
-        pic: fawfulPic
-      }
+      player[1].character = new Character(fawfulPic);
     }else{
       if(choose.two.x > 320 && choose.two.x < 400 && choose.two.y < 80){
-        player[1].character = {
-          pic: quotePic
-        }
+        player[1].character = new Character(quotePic);
       }else{
         if(choose.two.x > 410 && choose.two.x < 490 && choose.two.y < 80){
-          player[1].character = {
-            pic: floweyPic
-          }
+          player[1].character = new Character(floweyPic);
         }else{
           if(choose.two.x > 500 && choose.two.x < 580 && choose.two.y < 80){
-            player[1].character = {
-              pic: glitchPic
-            }
+            player[1].character = new Character(glitchPic);
           }else{
             if(choose.two.x > 590 && choose.two.x < 670 && choose.two.y < 80){
-              player[1].character = {
-                pic: sansPic
-              }
+              player[1].character = new Character(sansPic);
             }else{
               if(choose.two.x > 230 && choose.two.x < 310 && choose.two.y > 90 && choose.two.y < 170){
-                player[1].character = {
-                  pic: balosPic
-                }
+                player[1].character = new Character(balosPic);
               }
             }
           }
@@ -858,34 +262,22 @@ function draw() {
     }
     
     if(choose.three.x > 230 && choose.three.x < 310 && choose.three.y < 80){
-      player[2].character = {
-        pic: fawfulPic
-      }
+      player[2].character = new Character(fawfulPic);
     }else{
       if(choose.three.x > 320 && choose.three.x < 400 && choose.three.y < 80){
-        player[2].character = {
-          pic: quotePic
-        }
+        player[2].character = new Character(quotePic);
       }else{
         if(choose.three.x > 410 && choose.three.x < 490 && choose.three.y < 80){
-          player[2].character = {
-            pic: floweyPic
-          }
+          player[2].character = new Character(floweyPic);
         }else{
           if(choose.three.x > 500 && choose.three.x < 580 && choose.three.y < 80){
-            player[2].character = {
-              pic: glitchPic
-            }
+            player[2].character = new Character(glitchPic);
           }else{
             if(choose.three.x > 590 && choose.three.x < 670 && choose.three.y < 80){
-              player[2].character = {
-                pic: sansPic
-              }
+              player[2].character = new Character(sansPic);
             }else{
               if(choose.three.x > 230 && choose.three.x < 310 && choose.three.y > 90 && choose.three.y < 170){
-                player[2].character = {
-                  pic: balosPic
-                }
+                player[2].character = new Character(balosPic);
               }
             }
           }
@@ -894,34 +286,22 @@ function draw() {
     }
     
     if(choose.four.x > 230 && choose.four.x < 310 && choose.four.y < 80){
-      player[3].character = {
-        pic: fawfulPic
-      }
+      player[3].character = new Character(fawfulPic);
     }else{
       if(choose.four.x > 320 && choose.four.x < 400 && choose.four.y < 80){
-        player[3].character = {
-          pic: quotePic
-        }
+        player[3].character = new Character(quotePic);
       }else{
         if(choose.four.x > 410 && choose.four.x < 490 && choose.four.y < 80){
-          player[3].character = {
-            pic: floweyPic
-          }
+          player[3].character = new Character(floweyPic);
         }else{
           if(choose.four.x > 500 && choose.four.x < 580 && choose.four.y < 80){
-            player[3].character = {
-              pic: glitchPic
-            }
+            player[3].character = new Character(glitchPic);
           }else{
             if(choose.four.x > 590 && choose.four.x < 670 && choose.four.y < 80){
-              player[3].character = {
-                pic: sansPic
-              }
+              player[3].character = new Character(sansPic);
             }else{
               if(choose.four.x > 230 && choose.four.x < 310 && choose.four.y > 90 && choose.four.y < 170){
-                player[3].character = {
-                  pic: balosPic
-                }
+                player[3].character = new Character(balosPic);
               }
             }
           }
@@ -1087,70 +467,24 @@ function draw() {
       trans.x = 0;
       trans.y = 0;
       trans.count = 0;
-      if(player[0].character.pic !== undefined){
-        trans.count ++;
-        trans.x += player[0].x;
-        trans.y += player[0].y;
-        if(player[0].x > 350/trans.scale){
-          trans.scale -= 0.004;
-        }else {
-          if(player[0].x < -350/trans.scale){
-            trans.scale -= 0.004;
-          }else {
-            if(player[0].x < 100/trans.scale && player[0].x > -100/trans.scale){
-              trans.scale += 0.001;
-            }
-          }
-        }
-      }
-      if(player[1].character.pic !== undefined){
-        trans.count ++;
-        trans.x += player[1].x;
-        trans.y += player[1].y;
-        if(player[1].x > 350/trans.scale){
-          trans.scale -= 0.004;
-        }else {
-          if(player[1].x < -350/trans.scale){
-            trans.scale -= 0.004;
-          }else {
-            if(player[1].x < 100/trans.scale && player[1].x > -100/trans.scale){
-              trans.scale += 0.001;
-            }
-          }
-        }
-      }
-      if(player[2].character.pic !== undefined){
-        trans.count ++;
-        trans.x += player[2].x;
-        trans.y += player[2].y;
-        if(player[2].x > 350/trans.scale){
-          trans.scale -= 0.004;
-        }else {
-          if(player[2].x < -350/trans.scale){
-            trans.scale -= 0.004;
-          }else {
-            if(player[2].x < 100/trans.scale && player[2].x > -100/trans.scale){
-              trans.scale += 0.001;
-            }
-          }
-        }
-      }
-      if(player[3].character.pic !== undefined){
-        trans.count ++;
-        trans.x += player[3].x;
-        trans.y += player[3].y;
-        if(player[3].x > 350/trans.scale){
-          trans.scale -= 0.004;
-        }else {
-          if(player[3].x < -350/trans.scale){
-            trans.scale -= 0.004;
-          }else {
-            if(player[3].x < 100/trans.scale && player[3].x > -100/trans.scale){
-              trans.scale += 0.001;
-            }
-          }
-        }
-      }
+			for(var p = 0;p < player.length;p ++) {
+				if(player[p].character.pic !== undefined){
+					trans.count ++;
+					trans.x += player[p].x;
+					trans.y += player[p].y;
+					if(player[p].x > 350/trans.scale){
+						trans.scale -= 0.004;
+					}else {
+						if(player[p].x < -350/trans.scale){
+							trans.scale -= 0.004;
+						}else {
+							if(player[p].x < 100/trans.scale && player[p].x > -100/trans.scale){
+								trans.scale += 0.001;
+							}
+						}
+					}
+				}
+			}
       push();
       translate(450 - (trans.x)/trans.count,250 - (trans.y)/(trans.count*2));
       push();
@@ -1170,14 +504,6 @@ function draw() {
           if(player[i].inv < 1 || player[i].inv % 2 === 0){
             image(player[i].character.pic,player[i].x,player[i].y,50,60);
           }
-					if(keys[controls[i].shield]) {
-						fill(50, 50, 200, 100);
-						stroke(50, 50, 230, 120);
-						ellipse(player[i].x, player[i].y, 40, 40);
-						fill(130, 130, 255, 100);
-						stroke(150, 150, 255, 150);
-						ellipse(player[i].x, player[i].y, frameCount % 40, frameCount % 40);
-					}
           if(i === 0){
             fill(220,130,130);
           }
@@ -1199,17 +525,17 @@ function draw() {
           }
           player[i].x += player[i].xVel;
           player[i].y += player[i].yVel;
-          if(keys[controls[i].right] && player[i].attacking === false && player[i].xVel < 2.5 && !keys[controls[i].shield]){
+          if(keys[controls[i].right] && player[i].attacking === false && player[i].xVel < 2.5){
             player[i].xVel ++;
             player[i].dir = 1;
           }
-          if(keys[controls[i].left] && player[i].attacking === false && player[i].xVel > -2.5 && !keys[controls[i].shield]){
+          if(keys[controls[i].left] && player[i].attacking === false && player[i].xVel > -2.5){
             player[i].xVel --;
             player[i].dir = 2;
           }
-    	  if(!(player[i].x > -250 && player[i].x < 250 && player[i].y > -30 && player[i].y < 225)){
+    	  	if(!(player[i].x > -250 && player[i].x < 250 && player[i].y > -30 && player[i].y < 225)){
             player[i].yVel += 0.4;
-            if(player[i].jump && keys[controls[i].up] && player[i].yVel > -2 && player[i].attacking === false && !keys[controls[i].shield]){
+            if(player[i].jump && keys[controls[i].up] && player[i].yVel > -2 && player[i].attacking === false){
               player[i].yVel = -7;
               player[i].jump = false;
             }
@@ -1219,7 +545,7 @@ function draw() {
             if(player[i].y + player[i].yVel <= -30){
               player[i].yVel = 0;
             }
-            if(keys[controls[i].up] && player[i].attacking === false && !keys[controls[i].shield]){
+            if(keys[controls[i].up] && player[i].attacking === false){
               player[i].yVel -= 7;
               player[i].jump = true;
             }
@@ -1246,21 +572,9 @@ function draw() {
             player[i].yVel = 0;
             player[i].xVel = 0;
           }
-          if(keys[controls[i].attack] && player[i].attacking === false && !keys[controls[i].shield]){
+          if(keys[controls[i].attack] && player[i].attacking === false){
             player[i].attacking = true;
-            if(player[i].character.pic === balosPic){
-              balosAttack(i);
-            }else{
-              if(player[i].character.pic === quotePic){
-                quoteAttack(i);
-              }else{
-                if(player[i].character.pic === fawfulPic){
-                  fawfulAttack(i);
-                }else {
-                  defaultAttack(i);
-                }
-              }
-            }
+            player[i].character.attack(i);
           }
         }
         for(var u = 0;u < attack.length;u ++){
@@ -1270,7 +584,7 @@ function draw() {
           fill(0,0,0);
           attack[u].time --;
           rect(attack[u].x,attack[u].y,attack[u].w,attack[u].h);
-          if(!keys[controls[i].shield] && attack[u].x + attack[u].w > player[i].x - 25 && attack[u].x < player[i].x + 25 && attack[u].y + attack[u].h > player[i].y - 30 && attack[u].y < player[i].y + 30){
+          if(attack[u].x + attack[u].w > player[i].x - 25 && attack[u].x < player[i].x + 25 && attack[u].y + attack[u].h > player[i].y - 30 && attack[u].y < player[i].y + 30){
             if(player[i].x >= attack[u].x + attack[u].w/2 && i !== attack[u].player){
               if(player[i].inv < 1){
                 player[i].damage += attack[u].damage;
@@ -1291,14 +605,7 @@ function draw() {
               }
             }
           }
-          if(attack[u].type === "gun"){
-            if(attack[u].dir === 1){
-              attack[u].x += 5;
-            }
-            if(attack[u].dir === 2){
-              attack[u].x -= 5;
-            }
-          }
+					playAttack(u);
           if(attack[u].time <= 0){
             player[attack[u].player].attacking = false;
             attack.splice(u,1);
