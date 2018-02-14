@@ -40,7 +40,7 @@ function draw() {
     if(frameCount % 10 === 0){
       loading += round(random(0,10));
     }
-  }
+  }//Intro
   if(menu === 0){//main menu
     //println(fire.length);
     noStroke();
@@ -111,10 +111,10 @@ function draw() {
     pop();    
     fill(255,255,255);
     textSize(35);
-    text("Version 0.0.2 Pre",450,350);
+    text("Version 0.0.3 Pre",450,350);
     textSize(20);
     text("All characters belong to Nintendo, Studio Pixel, or Toby Fox",450,480);
-  }
+  }//Main menu
   if(menu === 1){//settings
     noStroke();
     backButton();
@@ -199,7 +199,7 @@ function draw() {
       fill(255,255,255);
       text("Type any key\n(Escape to cancel)",450,250);
     }
-  }
+  }//Settings
   if(menu === 2){//character select
     backButton();
     fill(90,90,90);
@@ -459,7 +459,7 @@ function draw() {
         }
       }
     }
-  }
+  }//Character select
   if(menu === 4){//actually in the battle
     fill(255,255,255);
     rect(-1,-1,902,502);
@@ -496,7 +496,7 @@ function draw() {
       imageMode(CENTER);
       picCount = 0;
       for(var i = 0;i < player.length;i ++){
-        if(player[i].character.pic !== undefined){
+        if(player[i].character.pic !== undefined && player[i].alive){
           if(player[i].inv > 0){
             player[i].inv --;
           }
@@ -565,6 +565,10 @@ function draw() {
             player[i].yVel = 1;
           }
           if(player[i].y > 750){
+						player[i].lives --;
+						if(player[i].lives < 1) {
+							player[i].alive = false;
+						}
             player[i].damage = 0;
             player[i].inv = 50;
             player[i].x = 0;
@@ -616,25 +620,39 @@ function draw() {
       pop();
       pop();
       
-      textSize(28);
-      for(var i = 0;i < picCount;i ++){
-        if(i === 0){
-          fill(220,130,130,150);
-        }
-        if(i === 1){
-          fill(130,130,220,150);
-        }
-        if(i === 2){
-          fill(130,220,130,150);
-        }
-        if(i === 3){
-          fill(220,130,220,150);
-        }
-        rect(i * 900/picCount,450,900/picCount,50,10);
-        fill(50 + (player[i].damage * 2),50 - player[i].damage,50 - player[i].damage,200);
-        text("Player "+ (i + 1),i * 900/picCount + (900/picCount)/2,460);
-        text(round(player[i].damage) + "%",i * 900/picCount + (900/picCount)/2,490);
+      textSize(18);
+			playersDown = 0;
+      for(var i = 0;i < player.length;i ++){
+				if(player[i].character.pic != undefined) {
+					if(i === 0){
+						fill(220,130,130,150);
+					}
+					if(i === 1){
+						fill(130,130,220,150);
+					}
+					if(i === 2){
+						fill(130,220,130,150);
+					}
+					if(i === 3){
+						fill(220,130,220,150);
+					}
+					rect((i-playersDown) * 900/picCount,450,900/picCount,50,10);
+					fill(50 + (player[i].damage * 2),50 - player[i].damage,50 - player[i].damage,200);
+					text("Player " + (i + 1),(i-playersDown) * 900/picCount + (900/picCount)/2,460);
+					text(round(player[i].damage) + "%",(i-playersDown) * 900/picCount + (900/picCount)/2,475);
+					text("Lives " + player[i].lives,(i-playersDown) * 900/picCount + (900/picCount)/2,490);
+				} else {
+					playersDown ++;
+				}
       }
+			if(picCount <= 1) {
+				menu = 5;
+				for(var i = 0;i < player.length;i ++) {
+					if(player[i].alive && player[i].character.pic != undefined) {
+						winner = i;
+					}
+				}
+			}
     }
     if(pause === true){
       fill(100,100,100,200);
@@ -654,7 +672,25 @@ function draw() {
         pause = false;
       }
     }
-  }
+  }//In battle
+	if(menu === 5){//After a battle
+		background(0);
+		textSize(40);
+		fill(50, 50, 255, 150);
+		text(player[winner].name() + " Wins!", 450, 100);
+		text("Player " + winner, 450, 150);
+		playersDown = 0;
+		for(var i = 0;i < player.length;i ++) {
+			if(player[i].character.pic != undefined && i != winner) {
+				image(player[i].character.pic, 430 + 60*(i-playersDown), 330, 50, 60);
+			} else {
+				playersDown ++;
+			}
+		}
+		image(player[winner].character.pic, 390, 190, 100, 120);
+		textSize(25);
+		text("Click to continue", 450, 400);
+	}//After a battle
   /*stroke(255,255,255);
   line(450,0,450,500);//debug
   line(0,250,900,250);//debug
@@ -673,7 +709,7 @@ function draw() {
 }
 
 function mouseClicked(){
-  if(menu === 2 && choose.place === false){
+  if(menu === 2 && choose.place === false) {
     if(mouseX > 20 && mouseX < 220 && mouseY > 290 && mouseY < 490){
       if(player[0].cpu === true){
         player[0].cpu = false;
@@ -703,7 +739,7 @@ function mouseClicked(){
       }
     }
   }
-  if(menu === 0){
+  if(menu === 0) {//Main menu
     if(dist(mouseX,mouseY,700,350) < 50 || (mouseX > 700 && mouseX < 850 && mouseY > 300 && mouseY < 400)){
       menu = 1;
       playerNum = 1;
@@ -711,69 +747,10 @@ function mouseClicked(){
     if(dist(mouseX,mouseY,100,350) < 50 || (mouseX > 100 && mouseX < 250 && mouseY > 300 && mouseY < 400)){
       menu = 2;
       player = [
-        {
-          x: 0,
-          y: 0,
-          cpu: false,
-          damage: 0,
-          xVel: 0,
-          yVel: 0,
-          look: 0,//0: neither 1: up 2: down
-          dir: 1,//1: right 2: left
-          attacking: false,
-          inv: 0,
-          character: {
-            pic: undefined,
-
-          }
-        },
-        {
-          x: 0,
-          y: 0,
-          cpu: true,
-          damage: 0,
-          xVel: 0,
-          yVel: 0,
-          look: 0,
-          dir: 1,
-          attacking: false,
-          inv: 0,
-          character: {
-            pic: undefined,
-
-          }
-        },
-        {
-          x: 0,
-          y: 0,
-          cpu: true,
-          damage: 0,
-          xVel: 0,
-          yVel: 0,
-          look: 0,
-          dir: 1,
-          attacking: false,
-          inv: 0,
-          character: {
-            pic: undefined,
-
-          }
-        },
-        {
-          x: 0,
-          y: 0,
-          cpu: true,
-          damage: 0,
-          xVel: 0,
-          yVel: 0,
-          look: 0,
-          dir: 1,
-          attacking: false,
-          inv: 0,
-          character: {
-            pic: undefined,
-          }
-        },
+        new Player(0, 0, false, 0, 0, 0, 0, 1, false, 0, 3, true, new Character(undefined)),
+				new Player(0, 0, false, 0, 0, 0, 0, 1, false, 0, 3, true, new Character(undefined)),
+				new Player(0, 0, true, 0, 0, 0, 0, 1, false, 0, 3, true, new Character(undefined)),
+				new Player(0, 0, true, 0, 0, 0, 0, 1, false, 0, 3, true, new Character(undefined))
       ];
       choose = {
         place: true,
@@ -795,7 +772,10 @@ function mouseClicked(){
         }
       }
     }
-  }
+  }//Main menu
+	if(menu === 5) {
+		menu = 0;
+	}//End of battle
 }
 
 function keyPressed(){
