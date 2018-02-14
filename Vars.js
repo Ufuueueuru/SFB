@@ -1,3 +1,5 @@
+var playersDown = 0;//Finds the amount of players not in the match
+var winner = 0;//Who won the last match
 var trans = {x: 0, y: 0, scale: 1, count: 0};
 var playerNum = 1;
 var keySelect = [false,0];
@@ -75,8 +77,8 @@ var attack = [
   }
 ];
 var player = [
-	new Player(0, 0, false, 0, 0, 0, 0, 1, false, 0, new Character(undefined)),
-	new Player(0, 0, false, 0, 0, 0, 0, 1, true, 0, new Character(undefined)),
-	new Player(0, 0, false, 0, 0, 0, 0, 1, true, 0, new Character(undefined)),
-	new Player(0, 0, false, 0, 0, 0, 0, 1, true, 0, new Character(undefined)),
+	new Player(0, 0, false, 0, 0, 0, 0, 1, false, 0, 3, true, new Character(undefined)),
+	new Player(0, 0, false, 0, 0, 0, 0, 1, false, 0, 3, true, new Character(undefined)),
+	new Player(0, 0, true, 0, 0, 0, 0, 1, false, 0, 3, true, new Character(undefined)),
+	new Player(0, 0, true, 0, 0, 0, 0, 1, false, 0, 3, true, new Character(undefined))
 ];
