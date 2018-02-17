@@ -7,6 +7,30 @@ function setup() {
   sansPic = loadImage("sans.png");
   balosPic = loadImage("balos.png");
   glitchPic = loadImage("Glitch.png");
+	
+	quote0 = loadImage("quote0.png");//quote frames
+	quote1 = loadImage("quote1.png");//quote frames
+	quote3 = loadImage("quote3.png");//quote frames
+	
+	quote4 = loadImage("quote4.png");//quote frames
+	quote5 = loadImage("quote5.png");//quote frames
+	quote7 = loadImage("quote7.png");//quote frames
+	
+	sans0 = loadImage("sans0.png");//sans frames
+	sans1 = loadImage("sans1.png");//sans frames
+	
+	sans2 = loadImage("sans2.png");//sans frames
+	sans3 = loadImage("sans3.png");//sans frames
+	
+	fawful0 = loadImage("fawful0.png");//fawful frames
+	fawful1 = loadImage("fawful1.png");//fawful frames
+	fawful2 = loadImage("fawful2.png");//fawful frames
+	fawful3 = loadImage("fawful3.png");//fawful frames
+	
+	fawful4 = loadImage("fawful4.png");//fawful frames
+	fawful5 = loadImage("fawful5.png");//fawful frames
+	fawful6 = loadImage("fawful6.png");//fawful frames
+	fawful7 = loadImage("fawful7.png");//fawful frames
 }
 
 function draw() {
@@ -31,6 +55,8 @@ function draw() {
     if(loading > 100){
       loading = 100;
     }
+		//anim.draw(100,100,50,60);//Animation example
+		//anim.move(2);//Animation example
     text("Loading...".substring(0,7+((frameCount/10) % 4)),500,450);
     text(loading+"%",700,450);
     textAlign(CENTER,CENTER);
@@ -53,11 +79,11 @@ function draw() {
       fire[i][3] -= random(2,5);
       fire[i][4] += random(2,5);
       fire[i][5] -= random(2,5);
-      if(fire[i][5] < 0){
+      if(fire[i][5] < 0 || fire[i][4] < 0 || fire[i][3] < 0 || fire[i][2] < 0 || fire[i][1] < 0 || fire[i][0] < 0){
         fire.splice(i,1);
       }
     }
-    if(frameCount % 30){
+    if((frameCount % 30) % 3 <= 1){
       fire.push([random(0,600),random(200,500),random(0,600),random(200,500),random(0,600),random(200,500)]);
     }
     image(title,0,0);
@@ -111,7 +137,7 @@ function draw() {
     pop();    
     fill(255,255,255);
     textSize(35);
-    text("Version 0.0.3 Pre",450,350);
+    text("Version 0.1.0 Pre",450,350);
     textSize(20);
     text("All characters belong to Nintendo, Studio Pixel, or Toby Fox",450,480);
   }//Main menu
@@ -456,6 +482,16 @@ function draw() {
       for(var i = 0;i < player.length;i ++){
         if(player[i].character.pic !== undefined && keys[controls[i].attack]){
           menu = 4;
+					arena.formArena();
+					for(var p = 0;p < player.length;p ++) {
+						player[p].damage = 0;
+						player[p].inv = 50;
+						player[p].shieldNum = 200;
+						player[p].x = arena.spawn[p].x;
+						player[p].y = arena.spawn[p].y;
+						player[p].yVel = 0;
+						player[p].xVel = 0;
+					}
         }
       }
     }
@@ -468,153 +504,243 @@ function draw() {
       trans.y = 0;
       trans.count = 0;
 			for(var p = 0;p < player.length;p ++) {
-				if(player[p].character.pic !== undefined){
+				if(player[p].character.pic !== undefined && player[p].alive){
 					trans.count ++;
 					trans.x += player[p].x;
 					trans.y += player[p].y;
 					if(player[p].x > 350/trans.scale){
-						trans.scale -= 0.004;
+						trans.scale -= 0.008;
 					}else {
 						if(player[p].x < -350/trans.scale){
-							trans.scale -= 0.004;
+							trans.scale -= 0.008;
 						}else {
 							if(player[p].x < 100/trans.scale && player[p].x > -100/trans.scale){
-								trans.scale += 0.001;
+								trans.scale += 0.002;
 							}
 						}
 					}
 				}
 			}
+			if(keys[27]) {
+				pause = true;
+			}
       push();
-      translate(450 - (trans.x)/trans.count,250 - (trans.y)/(trans.count*2));
+      translate(450 - (trans.x)/trans.count,250 - (trans.y)/(trans.count));
       push();
       scale(constrain(trans.scale*(9/10), 0.2, 1.5));
-      if(arena === "classic"){
-        fill(0,0,0);
-        rect(-225,0,450,200);
-      }
+      arena.formArena();
       imageMode(CENTER);
       picCount = 0;
       for(var i = 0;i < player.length;i ++){
-        if(player[i].character.pic !== undefined && player[i].alive){
-          if(player[i].inv > 0){
-            player[i].inv --;
-          }
-          picCount ++;
-          if(player[i].inv < 1 || player[i].inv % 2 === 0){
-            image(player[i].character.pic,player[i].x,player[i].y,50,60);
-          }
-          if(i === 0){
-            fill(220,130,130);
-          }
-          if(i === 1){
-            fill(130,130,220);
-          }
-          if(i === 2){
-            fill(130,220,130);
-          }
-          if(i === 3){
-            fill(220,130,220);
-          }
-          textSize(25);
-          text("Player " + (i + 1),player[i].x,player[i].y - 40);
-          if(player[i].xVel > 0){
-              player[i].xVel = floor(player[i].xVel*100)/110;
-          }else{
-              player[i].xVel = ceil(player[i].xVel*100)/110;
-          }
-          player[i].x += player[i].xVel;
-          player[i].y += player[i].yVel;
-          if(keys[controls[i].right] && player[i].attacking === false && player[i].xVel < 2.5){
-            player[i].xVel ++;
-            player[i].dir = 1;
-          }
-          if(keys[controls[i].left] && player[i].attacking === false && player[i].xVel > -2.5){
-            player[i].xVel --;
-            player[i].dir = 2;
-          }
-    	  	if(!(player[i].x > -250 && player[i].x < 250 && player[i].y > -30 && player[i].y < 225)){
-            player[i].yVel += 0.4;
-            if(player[i].jump && keys[controls[i].up] && player[i].yVel > -2 && player[i].attacking === false){
-              player[i].yVel = -7;
-              player[i].jump = false;
-            }
-          }
-          if(player[i].x > -250 && player[i].x < 250 && player[i].y > -30 && player[i].y < 225){
-            player[i].yVel = -0.7;
-            if(player[i].y + player[i].yVel <= -30){
-              player[i].yVel = 0;
-            }
-            if(keys[controls[i].up] && player[i].attacking === false){
-              player[i].yVel -= 7;
-              player[i].jump = true;
-            }
-          }
-          if(keys[controls[i].pause]){
-            pause = true;
-          }
-          if(player[i].y > -20 && player[i].y < 215){
-            if(player[i].x > -255 && player[i].x < -230){
-              player[i].xVel = -1;
-            }
-            if(player[i].x < 255 && player[i].x > 230){
-              player[i].xVel = 1;
-            }
-          }
-          if(player[i].y > 170 && player[i].x > -250 && player[i].x < 250 && player[i].y < 225){
-            player[i].yVel = 1;
-          }
-          if(player[i].y > 750){
-						player[i].lives --;
-						if(player[i].lives < 1) {
-							player[i].alive = false;
+				if(!player[i].cpu) {
+					if(player[i].character.pic !== undefined && player[i].alive){
+						if(player[i].inv > 0){
+							player[i].inv --;
 						}
-            player[i].damage = 0;
-            player[i].inv = 50;
-            player[i].x = 0;
-            player[i].y = -30;
-            player[i].yVel = 0;
-            player[i].xVel = 0;
-          }
-          if(keys[controls[i].attack] && player[i].attacking === false){
-            player[i].attacking = true;
-            player[i].character.attack(i);
-          }
-        }
-        for(var u = 0;u < attack.length;u ++){
-          if(i === attack[u].player){
-            player[i].attacking = true;
-          }
-          fill(0,0,0);
-          attack[u].time --;
-          rect(attack[u].x,attack[u].y,attack[u].w,attack[u].h);
-          if(attack[u].x + attack[u].w > player[i].x - 25 && attack[u].x < player[i].x + 25 && attack[u].y + attack[u].h > player[i].y - 30 && attack[u].y < player[i].y + 30){
-            if(player[i].x >= attack[u].x + attack[u].w/2 && i !== attack[u].player){
-              if(player[i].inv < 1){
-                player[i].damage += attack[u].damage;
-                player[i].xVel += player[i].damage * 2 * attack[u].launch;
-                player[i].yVel -= player[i].damage / 2 * attack[u].launch;
-                attack[u].time = 0;
-                player[i].inv = 25;
-              }
-            }else{
-              if(player[i].x < attack[u].x + attack[u].w/2 && i !== attack[u].player){
-                if(player[i].inv < 1){
-                  player[i].damage += attack[u].damage;
-                  player[i].xVel -= player[i].damage * 2 * attack[u].launch;
-                  player[i].yVel -= player[i].damage / 2 * attack[u].launch;
-                  attack[u].time = 0;
-                  player[i].inv = 25;
-                }
-              }
-            }
-          }
-					playAttack(u);
-          if(attack[u].time <= 0){
-            player[attack[u].player].attacking = false;
-            attack.splice(u,1);
-          }
-        }
+						picCount ++;
+						if(player[i].inv < 1 || player[i].inv % 2 === 0){
+							player[i].character.animation.draw(player[i].x, player[i].y, 50, 60);
+							//image(player[i].character.pic,player[i].x,player[i].y,50,60);
+						}
+						if(i === 0){
+							fill(220,130,130);
+						}
+						if(i === 1){
+							fill(130,130,220);
+						}
+						if(i === 2){
+							fill(130,220,130);
+						}
+						if(i === 3){
+							fill(220,130,220);
+						}
+						textSize(25);
+						if(!player[i].cpu) {
+							text("Player " + (i + 1),player[i].x,player[i].y - 40);
+						} else {
+							text("CPU " + (i + 1),player[i].x,player[i].y - 40);
+						}
+
+						if(player[i].shield) {
+							for(var s = 0;s < 50;s += 3) {
+								fill(255 - (4*player[i].shieldNum), 50, 55 + (4*player[i].shieldNum), 10 + s + (frameCount % 50));
+								ellipse(player[i].x, player[i].y, 50-s, 50-s);
+							}
+						}
+
+						if(player[i].xVel > 0){
+								player[i].xVel = floor(player[i].xVel*100)/110;
+						}else{
+								player[i].xVel = ceil(player[i].xVel*100)/110;
+						}
+						player[i].x += player[i].xVel;
+						player[i].y += player[i].yVel;
+						if(keys[controls[i].right] && player[i].attacking === false && player[i].xVel < 2.5 && !player[i].shield){
+							player[i].xVel ++;
+							player[i].dir = 1;
+						}
+						if(keys[controls[i].left] && player[i].attacking === false && player[i].xVel > -2.5 && !player[i].shield){
+							player[i].xVel --;
+							player[i].dir = 2;
+						}
+						
+						if(player[i].dir === 1) {//Makes the animation face the same way as the character
+							player[i].character.animation.dir = 0;
+						}
+						if(player[i].dir === 2) {//Makes the animation face the same way as the character
+							player[i].character.animation.dir = 2;
+						}
+						
+						if(keys[controls[i].up] && player[i].attacking === false && !player[i].shield){
+							player[i].look = 1;
+						}
+						if(keys[controls[i].down] && player[i].attacking === false && !player[i].shield){
+							player[i].look = 2;
+						}
+						if(!keys[controls[i].down] && !keys[controls[i].up]) {
+							player[i].look = 0;
+						}
+
+						if(keys[controls[i].shield] && player[i].shieldNum > 40) {
+							player[i].shield = true;
+						}
+
+						if(player[i].shield && frameCount % 2 === 0) {
+							player[i].shieldNum --;
+						}
+
+						if(!keys[controls[i].shield] || player[i].shieldNum <= 0) {
+							player[i].shield = false;
+						}
+
+						if(!player[i].shield && player[i].shieldNum < 200 && frameCount % 3 === 0) {
+							player[i].shieldNum ++;
+						}
+
+						if(keys[controls[i].left]) {
+							if(!player[i].shield) {
+								player[i].character.animation.move(2);
+							}
+						} else {
+							if(keys[controls[i].right] && !player[i].shield) {
+								player[i].character.animation.move(0);
+							}
+						}
+
+						if(!keys[controls[i].left] && !keys[controls[i].right]) {
+							player[i].character.animation.reset();
+						}
+
+						if(player[i].shield) {
+							player[i].character.animation.reset();
+						}
+
+						if(keys[controls[i].pause]){
+							pause = true;
+						}
+
+						arena.collide(i);
+						if(!player[i].ground) {
+							player[i].yVel += 0.4;
+						}
+						//collisions with the world
+						/*if(!(player[i].x > -250 && player[i].x < 250 && player[i].y > -30 && player[i].y < 225)){
+							if(player[i].jump && keys[controls[i].up] && player[i].yVel > -2 && player[i].attacking === false && !player[i].shield){
+								player[i].yVel = -7;
+								player[i].jump = false;
+							}
+						}
+						if(player[i].x > -250 && player[i].x < 250 && player[i].y > -30 && player[i].y < 225){
+							player[i].airSpecial = true;
+							player[i].jump = true;
+							player[i].yVel = -0.7;
+							if(player[i].y + player[i].yVel <= -30){
+								player[i].yVel = 0;
+							}
+							if(keys[controls[i].up] && player[i].attacking === false && !player[i].shield){
+								player[i].yVel -= 7;
+							}
+						}
+						if(player[i].y > -20 && player[i].y < 215){
+							if(player[i].x > -255 && player[i].x < -230){
+								player[i].xVel = -1;
+							}
+							if(player[i].x < 255 && player[i].x > 230){
+								player[i].xVel = 1;
+							}
+						}
+						if(player[i].y > 170 && player[i].x > -250 && player[i].x < 250 && player[i].y < 225){
+							player[i].yVel = 5;
+						}*/
+						if(player[i].y > 750 || player[i].x < -750 || player[i].x > 750 || player[i].y < -900){
+							player[i].lives --;
+							if(player[i].lives < 1) {
+								player[i].alive = false;
+							}
+							player[i].damage = 0;
+							player[i].inv = 50;
+							player[i].shieldNum = 200;
+							player[i].x = arena.spawn[i].x;
+							player[i].y = arena.spawn[i].y;
+							player[i].yVel = 0;
+							player[i].xVel = 0;
+						}
+						if(keys[controls[i].attack] && !player[i].attacking && !player[i].shield){
+							player[i].character.attack(i);
+						}
+						if(keys[controls[i].special] && !player[i].attacking && !player[i].shield) {
+							player[i].character.special(i);
+						}
+					}
+					for(var u = 0;u < attack.length;u ++){
+						if(i === attack[u].player){
+							player[i].attacking = true;
+						}
+						fill(0,0,0);
+						attack[u].time --;
+						rect(attack[u].x,attack[u].y,attack[u].w,attack[u].h);
+						if(attack[u].x + attack[u].w > player[i].x - 25 && attack[u].x < player[i].x + 25 && attack[u].y + attack[u].h > player[i].y - 30 && attack[u].y < player[i].y + 30){
+							if(player[i].x >= attack[u].x + attack[u].w/2 && i !== attack[u].player){
+								if(player[i].inv < 1){
+									if(!player[i].shield) {
+										player[i].damage += attack[u].damage;
+									} else {
+										player[i].damage += round(attack[u].damage / 3);
+										player[i].shieldNum -= 3 * attack[u].damage;
+									}
+									player[i].xVel += player[i].damage *(3/2)* attack[u].launch * player[i].character.launch/2;
+									player[i].yVel -= player[i].damage *(2/3)* attack[u].launch * player[i].character.launch/2;
+									attack[u].time = 0;
+									player[i].inv = player[attack[u].player].character.inv;
+								}
+							}else{
+								if(player[i].x < attack[u].x + attack[u].w/2 && i !== attack[u].player){
+									if(player[i].inv < 1){
+										if(!player[i].shield) {
+											player[i].damage += attack[u].damage;
+										} else {
+											player[i].damage += round(attack[u].damage / 3);
+											player[i].shieldNum -= 3 * attack[u].damage;
+										}
+										player[i].xVel -= player[i].damage *(3/2)* attack[u].launch * player[i].character.launch/2;
+										player[i].yVel -= player[i].damage *(2/3)* attack[u].launch * player[i].character.launch/2;
+										attack[u].time = 0;
+										player[i].inv = player[attack[u].player].character.inv;
+									}
+								}
+							}
+						}
+						playAttack(u, i);
+						if(attack[u].time <= 0){
+							player[attack[u].player].attacking = false;
+							attack.splice(u,1);
+						}
+					}
+				}//!cpu if statement
+				if(player[i].cpu && player[i].alive) {
+					ai.run(i);
+					ai.calculate(i);
+				}//cpu
       }
       imageMode(CORNERS);
       pop();
@@ -623,22 +749,26 @@ function draw() {
       textSize(18);
 			playersDown = 0;
       for(var i = 0;i < player.length;i ++){
-				if(player[i].character.pic != undefined) {
+				if(player[i].character.pic != undefined && player[i].alive) {
 					if(i === 0){
-						fill(220,130,130,150);
+						fill(220,130,130,200);
 					}
 					if(i === 1){
-						fill(130,130,220,150);
+						fill(130,130,220,200);
 					}
 					if(i === 2){
-						fill(130,220,130,150);
+						fill(130,220,130,200);
 					}
 					if(i === 3){
-						fill(220,130,220,150);
+						fill(220,130,220,200);
 					}
 					rect((i-playersDown) * 900/picCount,450,900/picCount,50,10);
 					fill(50 + (player[i].damage * 2),50 - player[i].damage,50 - player[i].damage,200);
-					text("Player " + (i + 1),(i-playersDown) * 900/picCount + (900/picCount)/2,460);
+					if(!player[i].cpu) {
+						text("Player " + (i + 1),(i-playersDown) * 900/picCount + (900/picCount)/2,460);
+					} else {
+						text("CPU " + (i + 1),(i-playersDown) * 900/picCount + (900/picCount)/2,460);
+					}
 					text(round(player[i].damage) + "%",(i-playersDown) * 900/picCount + (900/picCount)/2,475);
 					text("Lives " + player[i].lives,(i-playersDown) * 900/picCount + (900/picCount)/2,490);
 				} else {
@@ -656,19 +786,20 @@ function draw() {
     }
     if(pause === true){
       fill(100,100,100,200);
-      ellipse(400,250,50,50);
-      ellipse(500,250,50,50);
+      ellipse(350,350,100,100);
+      ellipse(550,350,100,100);
       fill(50,50,50,230);
       textSize(70);
       text("Paused",450,200);
       textSize(20);
-      text("Exit",400,250);
-      text("Unpause",500,250);
-      if(dist(mouseX,mouseY,400,250) <= 25 && mouseIsPressed){
+      text("Exit",350,350);
+      text("Unpause",550,350);
+      if(dist(mouseX,mouseY,350,350) <= 50 && mouseIsPressed){
         pause = false;
         menu = 0;
+				fire = [];
       }
-      if(dist(mouseX,mouseY,500,250) <= 25 && mouseIsPressed){
+      if(dist(mouseX,mouseY,550,350) <= 50 && mouseIsPressed){
         pause = false;
       }
     }
@@ -676,9 +807,13 @@ function draw() {
 	if(menu === 5){//After a battle
 		background(0);
 		textSize(40);
-		fill(50, 50, 255, 150);
+		fill(255, 255, 255);
 		text(player[winner].name() + " Wins!", 450, 100);
-		text("Player " + winner, 450, 150);
+		if(!player[winner].cpu) {
+			text("Player " + (winner+1), 450, 150);
+		} else {
+			text("CPU " + (winner+1), 450, 150);
+		}
 		playersDown = 0;
 		for(var i = 0;i < player.length;i ++) {
 			if(player[i].character.pic != undefined && i != winner) {
@@ -747,10 +882,10 @@ function mouseClicked(){
     if(dist(mouseX,mouseY,100,350) < 50 || (mouseX > 100 && mouseX < 250 && mouseY > 300 && mouseY < 400)){
       menu = 2;
       player = [
-        new Player(0, 0, false, 0, 0, 0, 0, 1, false, 0, 3, true, new Character(undefined)),
-				new Player(0, 0, false, 0, 0, 0, 0, 1, false, 0, 3, true, new Character(undefined)),
-				new Player(0, 0, true, 0, 0, 0, 0, 1, false, 0, 3, true, new Character(undefined)),
-				new Player(0, 0, true, 0, 0, 0, 0, 1, false, 0, 3, true, new Character(undefined))
+        new Player(0, 0, false, 0, 0, 0, 0, 1, false, 0, 3, true, true, new Character(undefined)),
+        new Player(0, 0, false, 0, 0, 0, 0, 1, false, 0, 3, true, true, new Character(undefined)),
+        new Player(0, 0, true, 0, 0, 0, 0, 1, false, 0, 3, true, true, new Character(undefined)),
+        new Player(0, 0, true, 0, 0, 0, 0, 1, false, 0, 3, true, true, new Character(undefined))
       ];
       choose = {
         place: true,
@@ -775,6 +910,7 @@ function mouseClicked(){
   }//Main menu
 	if(menu === 5) {
 		menu = 0;
+		fire = [];
 	}//End of battle
 }
 
