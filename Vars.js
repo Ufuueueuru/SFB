@@ -1,12 +1,18 @@
 //Animations
-var quote;
+/*var quote;
 var flowey;
 var glitch;
 var sans;
 var ballos;
 var fawful;
+var link;*/
 //Animations
 //Animation images
+var link0;
+var link1
+var link2;
+var link3;
+
 var quote0;
 var quote1;
 var quote3;
@@ -44,6 +50,7 @@ var floweyPic;
 var glitchPic;
 var sansPic;
 var balosPic;
+var linkPic;
 var fawfulPic;//images
 
 var ai = new AI();
@@ -117,7 +124,7 @@ var attack = [
 ];
 var player = [
 	new Player(0, 0, false, 0, 0, 0, 0, 1, false, 0, 3, true, true, new Character(undefined)),
-	new Player(0, 0, false, 0, 0, 0, 0, 1, false, 0, 3, true, true, new Character(undefined)),
+	new Player(0, 0, true, 0, 0, 0, 0, 1, false, 0, 3, true, true, new Character(undefined)),
 	new Player(0, 0, true, 0, 0, 0, 0, 1, false, 0, 3, true, true, new Character(undefined)),
 	new Player(0, 0, true, 0, 0, 0, 0, 1, false, 0, 3, true, true, new Character(undefined))
 ];
