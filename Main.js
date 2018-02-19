@@ -7,6 +7,12 @@ function setup() {
   sansPic = loadImage("sans.png");
   balosPic = loadImage("balos.png");
   glitchPic = loadImage("Glitch.png");
+	linkPic = loadImage("link.png");
+	
+	link0 = loadImage("link0.png");//link frames
+	link1 = loadImage("link1.png");//link frames
+	link2 = loadImage("link2.png");//link frames
+	link3 = loadImage("link3.png");//link frames
 	
 	quote0 = loadImage("quote0.png");//quote frames
 	quote1 = loadImage("quote1.png");//quote frames
@@ -137,7 +143,7 @@ function draw() {
     pop();    
     fill(255,255,255);
     textSize(35);
-    text("Version 0.1.0 Pre",450,350);
+    text("Version 0.1.1 Pre",450,350);
     textSize(20);
     text("All characters belong to Nintendo, Studio Pixel, or Toby Fox",450,480);
   }//Main menu
@@ -176,6 +182,23 @@ function draw() {
         playerNum = 4;
       }
     }
+		
+		//CPU difficulty
+		textSize(30);
+		fill(255);
+		text("CPU difficulty: " + player[playerNum-1].difficulty,580, 450);
+		fill(90);
+		rect(534, 469, 92, 12);
+		for(var z = 0;z < 10;z ++) {
+			if(player[playerNum-1].difficulty > z) {
+				fill(75 + 20*z, 180 - 20*z, 100 - 10*z);
+				rect(z*10+535, 470, 10, 10);
+			}
+			if(mouseX > z*10+525 && mouseX < z*10+535 && mouseY > 470 && mouseY < 480 && mouseIsPressed && z !== 0) {
+				player[playerNum-1].difficulty = z;
+			}
+		}
+		
     //player controls
     textSize(25);
     fill(255,255,255);
@@ -238,6 +261,7 @@ function draw() {
     image(glitchPic,501,1,78,78);
     image(sansPic,591,1,78,78);
     image(balosPic,231,91,78,78);
+		image(linkPic,321,91,78,78);
     
     if(choose.one.x > 230 && choose.one.x < 310 && choose.one.y < 80){
       player[0].character = new Character(fawfulPic);
@@ -256,7 +280,11 @@ function draw() {
 	          }else{
               if(choose.one.x > 230 && choose.one.x < 310 && choose.one.y > 90 && choose.one.y < 170){
                 player[0].character = new Character(balosPic);
-              }
+              } else{
+								if(choose.one.x > 320 && choose.one.x < 400 && choose.one.y > 90 && choose.one.y < 170){
+									player[0].character = new Character(linkPic);
+								}
+							}
             }
           }
         }
@@ -280,7 +308,11 @@ function draw() {
             }else{
               if(choose.two.x > 230 && choose.two.x < 310 && choose.two.y > 90 && choose.two.y < 170){
                 player[1].character = new Character(balosPic);
-              }
+              } else{
+								if(choose.two.x > 320 && choose.two.x < 400 && choose.two.y > 90 && choose.two.y < 170){
+									player[1].character = new Character(linkPic);
+								}
+							}
             }
           }
         }
@@ -304,7 +336,11 @@ function draw() {
             }else{
               if(choose.three.x > 230 && choose.three.x < 310 && choose.three.y > 90 && choose.three.y < 170){
                 player[2].character = new Character(balosPic);
-              }
+              } else{
+								if(choose.three.x > 320 && choose.three.x < 400 && choose.three.y > 90 && choose.three.y < 170){
+									player[2].character = new Character(linkPic);
+								}
+							}
             }
           }
         }
@@ -328,7 +364,11 @@ function draw() {
             }else{
               if(choose.four.x > 230 && choose.four.x < 310 && choose.four.y > 90 && choose.four.y < 170){
                 player[3].character = new Character(balosPic);
-              }
+              } else{
+								if(choose.four.x > 320 && choose.four.x < 400 && choose.four.y > 90 && choose.four.y < 170){
+									player[3].character = new Character(linkPic);
+								}
+							}
             }
           }
         }
@@ -704,12 +744,14 @@ function draw() {
 								if(player[i].inv < 1){
 									if(!player[i].shield) {
 										player[i].damage += attack[u].damage;
+										player[i].xVel += player[i].damage *(3/2)* attack[u].launch * player[i].character.launch/2;
+										player[i].yVel -= player[i].damage *(2/3)* attack[u].launch * player[i].character.launch/2;
 									} else {
-										player[i].damage += round(attack[u].damage / 3);
+										player[i].damage += ceil(attack[u].damage / 3);
 										player[i].shieldNum -= 3 * attack[u].damage;
+										player[i].xVel += player[i].damage *(3/2)* attack[u].launch * player[i].character.launch/5;
+										player[i].yVel -= player[i].damage *(2/3)* attack[u].launch * player[i].character.launch/5;
 									}
-									player[i].xVel += player[i].damage *(3/2)* attack[u].launch * player[i].character.launch/2;
-									player[i].yVel -= player[i].damage *(2/3)* attack[u].launch * player[i].character.launch/2;
 									attack[u].time = 0;
 									player[i].inv = player[attack[u].player].character.inv;
 								}
@@ -718,19 +760,23 @@ function draw() {
 									if(player[i].inv < 1){
 										if(!player[i].shield) {
 											player[i].damage += attack[u].damage;
+											player[i].xVel -= player[i].damage *(3/2)* attack[u].launch * player[i].character.launch/2;
+											player[i].yVel -= player[i].damage *(2/3)* attack[u].launch * player[i].character.launch/2;
 										} else {
-											player[i].damage += round(attack[u].damage / 3);
+											player[i].damage += ceil(attack[u].damage / 3);
 											player[i].shieldNum -= 3 * attack[u].damage;
+											player[i].xVel -= player[i].damage *(3/2)* attack[u].launch * player[i].character.launch/5;
+											player[i].yVel -= player[i].damage *(2/3)* attack[u].launch * player[i].character.launch/5;
 										}
-										player[i].xVel -= player[i].damage *(3/2)* attack[u].launch * player[i].character.launch/2;
-										player[i].yVel -= player[i].damage *(2/3)* attack[u].launch * player[i].character.launch/2;
 										attack[u].time = 0;
 										player[i].inv = player[attack[u].player].character.inv;
 									}
 								}
 							}
 						}
-						playAttack(u, i);
+						
+						playAttack(u, i);//Runs the attacks
+						
 						if(attack[u].time <= 0){
 							player[attack[u].player].attacking = false;
 							attack.splice(u,1);
@@ -881,12 +927,15 @@ function mouseClicked(){
     }
     if(dist(mouseX,mouseY,100,350) < 50 || (mouseX > 100 && mouseX < 250 && mouseY > 300 && mouseY < 400)){
       menu = 2;
-      player = [
+			for(var i = 0;i < player.length;i ++) {
+				player[i].reset();
+			}
+      /*player = [
         new Player(0, 0, false, 0, 0, 0, 0, 1, false, 0, 3, true, true, new Character(undefined)),
-        new Player(0, 0, false, 0, 0, 0, 0, 1, false, 0, 3, true, true, new Character(undefined)),
-        new Player(0, 0, true, 0, 0, 0, 0, 1, false, 0, 3, true, true, new Character(undefined)),
-        new Player(0, 0, true, 0, 0, 0, 0, 1, false, 0, 3, true, true, new Character(undefined))
-      ];
+				new Player(0, 0, false, 0, 0, 0, 0, 1, false, 0, 3, true, true, new Character(undefined)),
+				new Player(0, 0, true, 0, 0, 0, 0, 1, false, 0, 3, true, true, new Character(undefined)),
+				new Player(0, 0, true, 0, 0, 0, 0, 1, false, 0, 3, true, true, new Character(undefined))
+      ];*/
       choose = {
         place: true,
         one: {
