@@ -12,13 +12,13 @@ function AI() {
 			}
 		}
 		
-		if(player[this.target[i]].x - player[i].x > 30) {//Go towards the player
+		if(player[this.target[i]].x - player[i].x > 30) {//Go towards the player  //30 is before the change
 			cpuControls[i].right = true;
 		} else {
 			cpuControls[i].right = false;
 		}
 		
-		if(player[this.target[i]].x - player[i].x < -30) {//Go towards the player
+		if(player[this.target[i]].x - player[i].x < -30) {//Go towards the player  //-30 is the before change
 			cpuControls[i].left = true;
 		} else {
 			cpuControls[i].left = false;
@@ -33,13 +33,13 @@ function AI() {
 		}*/
 		//I don't know if this works
 		
-		if(dist(player[this.target[i]].x, player[this.target[i]].y, player[i].x, player[i].y) < player[i].character.range) {//Attack when close
+		if(dist(player[this.target[i]].x, player[this.target[i]].y, player[i].x, player[i].y) < player[i].character.range && random(0,1) > .4-(player[i].difficulty/10)) {//Attack when close
 			cpuControls[i].attack = true;
 		} else {
 			cpuControls[i].attack = false;
 		}
 		
-		if(player[i].y - player[this.target[i]].y > 100) {//Use special to go up to the player
+		if(player[i].y - player[this.target[i]].y > 100 && random(0,1) > .6-(player[i].difficulty/10)) {//Use special to go up to the player
 			cpuControls[i].up = true;
 			cpuControls[i].special = true;
 		} else {
@@ -58,15 +58,17 @@ function AI() {
 			cpuControls[i].down = false;
 		}*/
 		
-		if(player[this.target[i]].y - player[i].y < -20) {//Jump up to the player
+		if(player[this.target[i]].y - player[i].y < -30) {//Jump up to the player
 			cpuControls[i].up = true;
 		} else {
 			cpuControls[i].up = false;
 		}
 		
 		if(player[this.target[i]].y > 300 || player[this.target[i]].x < arena.bounds[0] || player[this.target[i]].x > arena.bounds[1]) {//Don't fall off the edge
-			cpuControls[i].left = false;
-			cpuControls[i].right = false;
+			if(player[i].difficulty > 2) {
+				cpuControls[i].left = false;
+				cpuControls[i].right = false;
+			}
 		}
 		
 		if(dist(player[i].x, player[i].y, player[this.target[i]].x, player[this.target[i]].y) < 30) {//Attempts to get rid of stale mates
@@ -79,12 +81,12 @@ function AI() {
 			}
 		}
 		
-		if(player[i].x < arena.bounds[0]) {//Stays away from the edges
+		if(player[i].x < arena.bounds[0] && player[i].difficulty > 1) {//Stays away from the edges
 			cpuControls[i].right = true;
 			cpuControls[i].left = false;
 		}
 		
-		if(player[i].x > arena.bounds[1]) {//Stays away from the edges
+		if(player[i].x > arena.bounds[1] && player[i].difficulty > 1) {//Stays away from the edges
 			cpuControls[i].right = false;
 			cpuControls[i].left = true;
 		}
@@ -93,9 +95,34 @@ function AI() {
 			cpuControls[i].up = true;
 		}
 		
-		if(player[i].yVel > 16) {//Special jumps when going down too fast
+		if(player[i].yVel > 16 && random(0,1) > .9-(player[i].difficulty/10)) {//Special jumps when going down too fast
 			cpuControls[i].up = true;
 			cpuControls[i].special = true;
+		}
+		
+		if(random(0,1) > .9-(player[i].difficulty/20) && cpuControls[i].attack && dist(player[i].x, player[i].y, player[this.target[i]].x, player[this.target[i]].y) < 40) {
+			cpuControls[i].down = true;
+			cpuControls[i].special = true;
+			cpuControls[i].attack = false;
+			cpuControls[i].up = false;
+		} else {
+			cpuControls[i].down = false;
+		}
+		
+		for(var u = 0;u < attack.length;u ++) {
+			if(attack[u].player !== i && random(0,1) > .9-(player[i].difficulty/10) && player[i].inv < 50 - 4*player[i].difficulty) {
+				if(attack[u].x-10 + attack[u].w+20 > player[i].x-10 - 25 && attack[u].x-10 < player[i].x-10 + 25 && attack[u].y-10 + attack[u].h+20 > player[i].y-10 - 30 && attack[u].y-10 < player[i].y-10 + 30){
+					cpuControls[i].shield = true;
+				} else {
+					cpuControls[i].shield = false;
+				}
+			} else {
+				cpuControls[i].shield = false;
+			}
+		}
+		
+		if(attack.length < 1) {
+			cpuControls[i].shield = false;
 		}
 	}
 	
