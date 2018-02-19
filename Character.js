@@ -5,15 +5,15 @@ function Character(pic) {
 		this.range = 100;
 		
 		if(this.pic === quotePic) {
-			this.range = 150;
+			this.range = 250;
 		}
 		
 		if(this.pic === fawfulPic) {
-			this.range = 140;
+			this.range = 230;
 		}
 		
 		if(this.pic === sansPic) {
-			this.range = 130;
+			this.range = 160;
 		}
 		
 		if(this.pic === balosPic) {
@@ -23,6 +23,10 @@ function Character(pic) {
 		if(this.pic === glitchPic) {
 			this.range = 40;
 		}
+		
+		if(this.pic === linkPic) {
+			this.range = 80;
+		}
 	}//Range
 	
 	if(true) {
@@ -30,6 +34,10 @@ function Character(pic) {
 
 		if(this.pic === quotePic) {
 			this.animation = new Animation(0, 0, 36, [quote4, quote5, quote4, quote7], [], [quote0, quote1, quote0, quote3], []);
+		}
+		
+		if(this.pic === linkPic) {
+			this.animation = new Animation(0, 0, 18, [link2, link3], [], [link0, link1], []);
 		}
 
 		if(this.pic === floweyPic) {
@@ -67,21 +75,27 @@ function Character(pic) {
 		if(this.pic === floweyPic) {
 			this.launch = 1.4;
 		}
+		if(this.pic === linkPic) {
+			this.launch = 1.1;
+		}
 	}//Vulnerability
 	
 	if(true) {
 		this.inv = 50;
 		if(this.pic === sansPic) {
-			this.inv = 15;
+			this.inv = 2;
 		}
 		if(this.pic === balosPic) {
 			this.inv = 30;
 		}
 		if(this.pic === floweyPic) {
-			this.inv = 2;
+			this.inv = 15;
+		}
+		if(this.pic === linkPic) {
+			this.inv = 45;
 		}
 		if(this.pic === glitchPic) {
-			this.inv = 300;
+			this.inv = 200;
 		}
 	}//Invinsibility
 	
@@ -119,6 +133,73 @@ function Character(pic) {
 			}
 		}//default
 		
+		if(this.pic === linkPic) {
+			this.attack = function(index) {
+				if(player[index].look === 1) {
+					player[index].attacking = true;
+					attack.push({
+						x: player[index].x - 5,
+						y: player[index].y - 70,
+						w: 15,
+						h: 40,
+						time: 5,
+						player: index,
+						damage: 2,
+						launch: 0.4,
+						type: "sword up",
+						dir: 1
+					});
+				} else {
+					if(player[index].look === 2) {
+						player[index].attacking = true;
+						attack.push({
+							x: player[index].x - 5,
+							y: player[index].y + 30,
+							w: 15,
+							h: 40,
+							time: 5,
+							player: index,
+							damage: 3,
+							launch: 0.2,
+							type: "sword down",
+							dir: 1
+						});
+					} else {
+						if(player[index].dir === 1){
+							player[index].attacking = true;
+							attack.push({
+								x: player[index].x + 15,
+								y: player[index].y,
+								w: 40,
+								h: 15,
+								time: 5,
+								player: index,
+								damage: 4,
+								launch: 0.1,
+								type: "sword right",
+								dir: 1
+							});
+						}
+						if(player[index].dir === 2){
+							player[index].attacking = true;
+							attack.push({
+								x: player[index].x - 55,
+								y: player[index].y,
+								w: 40,
+								h: 15,
+								time: 5,
+								player: index,
+								damage: 4,
+								launch: 0.1,
+								type: "sword left",
+								dir: 2
+							});
+						}
+					}
+				}
+			}
+		}//link
+		
 		if(this.pic === sansPic) {
 			this.attack = function(index) {
 				if(player[index].dir === 1){
@@ -130,8 +211,8 @@ function Character(pic) {
 						h: 10,
 						time: 40,
 						player: index,
-						damage: 6,
-						launch: 0.1,
+						damage: 1,
+						launch: 0.3,
 						type: "high bone",
 						dir: 1
 					});
@@ -145,8 +226,8 @@ function Character(pic) {
 						h: 10,
 						time: 40,
 						player: index,
-						damage: 6,
-						launch: 0.1,
+						damage: 1,
+						launch: 0.3,
 						type: "high bone",
 						dir: 2
 					});
@@ -171,35 +252,51 @@ function Character(pic) {
 						dir: 2
 					});
 				} else {
-					if(player[index].dir === 2){
+					if(player[index].look === 2) {
 						player[index].attacking = true;
 						attack.push({
-							x: player[index].x - 45,
-							y: player[index].y - 10,
-							w: 30,
-							h: 25,
+							x: player[index].x - 12,
+							y: player[index].y + 20,
+							w: 25,
+							h: 30,
 							time: 40,
 							player: index,
 							damage: 4,
 							launch: 0.2,
-							type: "gun",
+							type: "gun down",
 							dir: 2
 						});
-					}
-					if(player[index].dir === 1){
-						player[index].attacking = true;
-						attack.push({
-							x: player[index].x + 15,
-							y: player[index].y - 10,
-							w: 30,
-							h: 25,
-							time: 40,
-							player: index,
-							damage: 4,
-							launch: 0.2,
-							type: "gun",
-							dir: 1
-						});
+					} else {
+						if(player[index].dir === 2){
+							player[index].attacking = true;
+							attack.push({
+								x: player[index].x - 40,
+								y: player[index].y - 10,
+								w: 30,
+								h: 25,
+								time: 40,
+								player: index,
+								damage: 4,
+								launch: 0.2,
+								type: "gun",
+								dir: 2
+							});
+						}
+						if(player[index].dir === 1){
+							player[index].attacking = true;
+							attack.push({
+								x: player[index].x + 10,
+								y: player[index].y - 10,
+								w: 30,
+								h: 25,
+								time: 40,
+								player: index,
+								damage: 4,
+								launch: 0.2,
+								type: "gun",
+								dir: 1
+							});
+						}
 					}
 				}
 			}
@@ -261,7 +358,7 @@ function Character(pic) {
 				if(player[index].look === 1) {
 					player[index].attacking = true;
 					attack.push({
-						x: player[index].x - 10,
+						x: player[index].x - 5,
 						y: player[index].y - 5,
 						w: 10,
 						h: 10,
@@ -273,10 +370,10 @@ function Character(pic) {
 						dir: 1
 					});
 				} else {
-					if(player[index].dir === 1){
+					if(player[index].look === 2) {
 						player[index].attacking = true;
 						attack.push({
-							x: player[index].x + 25,
+							x: player[index].x - 5,
 							y: player[index].y - 5,
 							w: 10,
 							h: 10,
@@ -284,24 +381,40 @@ function Character(pic) {
 							player: index,
 							damage: 6,
 							launch: 0.1,
-							type: "gun",
+							type: "gun down",
 							dir: 1
 						});
-					}
-					if(player[index].dir === 2){
-						player[index].attacking = true;
-						attack.push({
-							x: player[index].x - 35,
-							y: player[index].y - 5,
-							w: 10,
-							h: 10,
-							time: 35,
-							player: index,
-							damage: 6,
-							launch: 0.1,
-							type: "gun",
-							dir: 2
-						});
+					} else {
+						if(player[index].dir === 1){
+							player[index].attacking = true;
+							attack.push({
+								x: player[index].x + 15,
+								y: player[index].y - 5,
+								w: 10,
+								h: 10,
+								time: 35,
+								player: index,
+								damage: 6,
+								launch: 0.1,
+								type: "gun",
+								dir: 1
+							});
+						}
+						if(player[index].dir === 2){
+							player[index].attacking = true;
+							attack.push({
+								x: player[index].x - 25,
+								y: player[index].y - 5,
+								w: 10,
+								h: 10,
+								time: 35,
+								player: index,
+								damage: 6,
+								launch: 0.1,
+								type: "gun",
+								dir: 2
+							});
+						}
 					}
 				}
 			}
@@ -318,8 +431,8 @@ function Character(pic) {
 						h: 20,
 						time: 200,
 						player: index,
-						damage: 16,
-						launch: 0.8,
+						damage: 11,
+						launch: 0.6,
 						type: "glitch",
 						dir: 1
 					});
@@ -333,8 +446,8 @@ function Character(pic) {
 						h: 20,
 						time: 200,
 						player: index,
-						damage: 16,
-						launch: 0.8,
+						damage: 11,
+						launch: 0.6,
 						type: "glitch",
 						dir: 2
 					});
@@ -368,15 +481,15 @@ function Character(pic) {
 					if(player[index].look === 1) {
 						player[index].attacking = true;
 						attack.push({
-							x: player[index].x - 25,
-							y: player[index].y - 30,
-							w: 50,
-							h: 60,
-							time: 40,
+							x: player[index].x - 15,
+							y: player[index].y - 15,
+							w: 30,
+							h: 30,
+							time: 50,
 							player: index,
-							damage: 1,
-							launch: 0.4,
-							type: "jump",
+							damage: 2,
+							launch: 0.3,
+							type: "jump sans",
 							dir: 1
 						});
 					} else {
@@ -387,10 +500,10 @@ function Character(pic) {
 								y: player[index].y + 30,
 								w: 80,
 								h: 0,
-								time: 120,
+								time: 30,
 								player: index,
-								damage: 1,
-								launch: 0.8,
+								damage: 2,
+								launch: 0.5,
 								type: "bones",
 								dir: 1
 							});
@@ -465,6 +578,26 @@ function Character(pic) {
 							}
 						}
 					}
+				}
+			}
+		}
+		
+		if(this.pic === glitchPic) {
+			this.special = function(index) {
+				if(player[index].look === 1 && player[index].airSpecial) {
+					player[index].attacking = true;
+					attack.push({
+						x: player[index].x - 15,
+						y: player[index].y - 15,
+						w: 30,
+						h: 30,
+						time: 10,
+						player: index,
+						damage: 2,
+						launch: 1.3,
+						type: "glitch special",
+						dir: 1
+					});
 				}
 			}
 		}
