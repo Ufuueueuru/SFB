@@ -16,6 +16,26 @@ function Player(x, y, cpu, damage, xVel, yVel, look, dir, attacking, inv, lives,
 	this.alive = alive;//If you are alive
 	this.airSpecial = airSpecial;//Stops you from using special attack twice in the air
   this.character = character;//The character object
+	this.difficulty = 9;//1-9 How hard cpus are
+	
+	this.reset = function() {
+		this.x = 0;//x value
+		this.y = 0;//y value
+		this.shield = false;//If your shield is out
+		this.ground = false;
+		this.shieldNum = 200;//How much shield you have left
+		this.damage = 0;//How much damage you have taken
+		this.xVel = 0;//x velocity
+		this.yVel = 0;//y velocity
+		this.look = 0;//0: neither 1: up 2: down
+		this.dir = 1;//1: right 2: left
+		this.attacking = false;//If you are attacking
+		this.inv = 0;//How much invinsibility you have
+		this.lives = 3;//How many lives you have
+		this.alive = true;//If you are alive
+		this.character = new Character(undefined);
+		this.airSpecial = false;//Stops you from using special attack twice in the air
+	}
 	
 	this.name = function() {
 		if(this.character.pic === quotePic) {
@@ -35,6 +55,9 @@ function Player(x, y, cpu, damage, xVel, yVel, look, dir, attacking, inv, lives,
 		}
 		if(this.character.pic === sansPic) {
 			return "Sans";
+		}
+		if(this.character.pic === linkPic) {
+			return "Link";
 		}
 	}
 }
