@@ -19,6 +19,95 @@ function playAttack(u, i) {
 				attack[u].y += 8;
 			}
 		}
+		
+		if(attack[u].type === "bow") {
+			fill(255, 255, 0, 70);
+			for(var p = 0;p < player[i].character.charge;p ++) {
+				ellipse(player[i].x, player[i].y, 5*player[i].character.charge-5*p, 5*player[i].character.charge-5*p);
+			}
+			if(player[i].cpu) {
+				if(attack[u].dir === 1) {
+					if(cpuControls[i].special && attack[u].w === 0) {
+						attack[u].damage = player[i].character.charge;
+						attack[u].x = player[i].x + 15;
+						attack[u].y = player[i].y;
+						attack[u].time = 100;
+						attack[u].w = 0;
+						attack[u].h = 0;
+						if(frameCount % 3 === 0 && player[i].character.charge < 10) {
+							player[i].character.charge ++;
+						}
+					} else {
+						attack[u].y += 1.5/player[i].character.charge * 80/attack[u].time;
+						attack[u].x += player[i].character.charge*2;
+						attack[u].w = 30;
+						attack[u].h = 10;
+					}
+				}
+				if(attack[u].dir === 2) {
+					if(cpuControls[i].special && attack[u].w === 0) {
+						attack[u].damage = player[i].character.charge;
+						attack[u].x = player[i].x - 45;
+						attack[u].y = player[i].y;
+						attack[u].time = 100;
+						attack[u].w = 0;
+						attack[u].h = 0;
+						if(frameCount % 3 === 0 && player[i].character.charge < 10) {
+							player[i].character.charge ++;
+						}
+					} else {
+						attack[u].y += 1.5/player[i].character.charge * 80/attack[u].time;
+						attack[u].x -= player[i].character.charge*2;
+						attack[u].w = 30;
+						attack[u].h = 10;
+					}
+				}
+			} else {
+				if(attack[u].dir === 1) {
+					if(keys[controls[i].special] && attack[u].w === 0) {
+						attack[u].damage = player[i].character.charge;
+						attack[u].x = player[i].x + 15;
+						attack[u].y = player[i].y;
+						attack[u].time = 100;
+						attack[u].w = 0;
+						attack[u].h = 0;
+						if(frameCount % 3 === 0 && player[i].character.charge < 10) {
+							player[i].character.charge ++;
+						}
+					} else {
+						attack[u].y += 1.5/player[i].character.charge * 80/attack[u].time;
+						attack[u].x += player[i].character.charge*2;
+						attack[u].w = 30;
+						attack[u].h = 10;
+					}
+				}
+				if(attack[u].dir === 2) {
+					if(keys[controls[i].special] && attack[u].w === 0) {
+						attack[u].damage = player[i].character.charge;
+						attack[u].x = player[i].x - 45;
+						attack[u].y = player[i].y;
+						attack[u].time = 100;
+						attack[u].w = 0;
+						attack[u].h = 0;
+						if(frameCount % 3 === 0 && player[i].character.charge < 10) {
+							player[i].character.charge ++;
+						}
+					} else {
+						attack[u].y += 1.5/player[i].character.charge * 80/attack[u].time;
+						attack[u].x -= player[i].character.charge*2;
+						attack[u].w = 30;
+						attack[u].h = 10;
+					}
+				}
+			}
+		}//link
+		
+		if(attack[u].type === "sword up jump") {
+			attack[u].x = player[i].x - 5;
+			attack[u].y = player[i].y - 60;
+			player[i].yVel = -9;
+			player[i].airSpecial = false;
+		}//link
 
 		if(attack[u].type === "gun up"){
 			attack[u].y -= 20;
