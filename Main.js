@@ -1,42 +1,47 @@
 function setup() {
   createCanvas(900,500);
-  title = loadImage("Title.png");
-  fawfulPic = loadImage("Fawful.png");
-  quotePic = loadImage("Quote.png");
-  floweyPic = loadImage("Flowey.png");
-  sansPic = loadImage("sans.png");
-  balosPic = loadImage("balos.png");
-  glitchPic = loadImage("Glitch.png");
-	linkPic = loadImage("link.png");
+  title = loadImage("Title.png", loaded);
+  fawfulPic = loadImage("Fawful.png", loaded);
+  quotePic = loadImage("Quote.png", loaded);
+  floweyPic = loadImage("Flowey.png", loaded);
+  sansPic = loadImage("sans.png", loaded);
+  balosPic = loadImage("balos.png", loaded);
+	linkPic = loadImage("link.png", loaded);
+	randomPic = loadImage("random.png", loaded);//IMPORTANT: Whenever you add new loads, add one to var pictures in Vars.js
 	
-	link0 = loadImage("link0.png");//link frames
-	link1 = loadImage("link1.png");//link frames
-	link2 = loadImage("link2.png");//link frames
-	link3 = loadImage("link3.png");//link frames
+	glitchPic = loadImage("Glitch.png", loaded);//glitch frames
+	glitch1 = loadImage("glitch1.png", loaded);//glitch frames
+	glitch2 = loadImage("glitch2.png", loaded);//glitch frames
+	glitch3 = loadImage("glitch3.png", loaded);//glitch frames	
 	
-	quote0 = loadImage("quote0.png");//quote frames
-	quote1 = loadImage("quote1.png");//quote frames
-	quote3 = loadImage("quote3.png");//quote frames
+	link0 = loadImage("link0.png", loaded);//link frames
+	link1 = loadImage("link1.png", loaded);//link frames
+	link2 = loadImage("link2.png", loaded);//link frames
+	link3 = loadImage("link3.png", loaded);//link frames
 	
-	quote4 = loadImage("quote4.png");//quote frames
-	quote5 = loadImage("quote5.png");//quote frames
-	quote7 = loadImage("quote7.png");//quote frames
+	quote0 = loadImage("quote0.png", loaded);//quote frames
+	quote1 = loadImage("quote1.png", loaded);//quote frames
+	quote3 = loadImage("quote3.png", loaded);//quote frames
 	
-	sans0 = loadImage("sans0.png");//sans frames
-	sans1 = loadImage("sans1.png");//sans frames
+	quote4 = loadImage("quote4.png", loaded);//quote frames
+	quote5 = loadImage("quote5.png", loaded);//quote frames
+	quote7 = loadImage("quote7.png", loaded);//quote frames
 	
-	sans2 = loadImage("sans2.png");//sans frames
-	sans3 = loadImage("sans3.png");//sans frames
+	sans0 = loadImage("sans0.png", loaded);//sans frames
+	sans1 = loadImage("sans1.png", loaded);//sans frames
 	
-	fawful0 = loadImage("fawful0.png");//fawful frames
-	fawful1 = loadImage("fawful1.png");//fawful frames
-	fawful2 = loadImage("fawful2.png");//fawful frames
-	fawful3 = loadImage("fawful3.png");//fawful frames
+	sans2 = loadImage("sans2.png", loaded);//sans frames
+	sans3 = loadImage("sans3.png", loaded);//sans frames
 	
-	fawful4 = loadImage("fawful4.png");//fawful frames
-	fawful5 = loadImage("fawful5.png");//fawful frames
-	fawful6 = loadImage("fawful6.png");//fawful frames
-	fawful7 = loadImage("fawful7.png");//fawful frames
+	fawful0 = loadImage("fawful0.png", loaded);//fawful frames
+	fawful1 = loadImage("fawful1.png", loaded);//fawful frames
+	fawful2 = loadImage("fawful2.png", loaded);//fawful frames
+	fawful3 = loadImage("fawful3.png", loaded);//fawful frames
+	
+	fawful4 = loadImage("fawful4.png", loaded);//fawful frames
+	fawful5 = loadImage("fawful5.png", loaded);//fawful frames
+	fawful6 = loadImage("fawful6.png", loaded);//fawful frames
+	fawful7 = loadImage("fawful7.png", loaded);//fawful frames
 }
 
 function draw() {
@@ -68,9 +73,6 @@ function draw() {
     textAlign(CENTER,CENTER);
     if(loading >= 100){
       menu = 0;
-    }
-    if(frameCount % 10 === 0){
-      loading += round(random(0,10));
     }
   }//Intro
   if(menu === 0){//main menu
@@ -143,7 +145,7 @@ function draw() {
     pop();    
     fill(255,255,255);
     textSize(35);
-    text("Version 0.1.1 Pre",450,350);
+    text("Version 0.1.3 Pre",450,350);
     textSize(20);
     text("All characters belong to Nintendo, Studio Pixel, or Toby Fox",450,480);
   }//Main menu
@@ -251,6 +253,16 @@ function draw() {
   }//Settings
   if(menu === 2){//character select
     backButton();
+		
+		//Lives
+		fill(200, 100, 100, 150);
+		rect(15, 45, 200, 40);
+		fill(255);
+		textSize(30);
+		text("Lives: "+allPlayerStock, 120, 65);
+		triangle(30, 55, 30, 75, 20, 65);
+		triangle(200, 55, 200, 75, 210, 65);
+		
     fill(90,90,90);
     for(var i = 0;i < 15;i ++){
       rect((i % 5)*90 + 230,(i % 3)*90,80,80,10);
@@ -262,6 +274,7 @@ function draw() {
     image(sansPic,591,1,78,78);
     image(balosPic,231,91,78,78);
 		image(linkPic,321,91,78,78);
+		image(randomPic, 411, 91, 78, 78);
     
     if(choose.one.x > 230 && choose.one.x < 310 && choose.one.y < 80){
       player[0].character = new Character(fawfulPic);
@@ -283,6 +296,10 @@ function draw() {
               } else{
 								if(choose.one.x > 320 && choose.one.x < 400 && choose.one.y > 90 && choose.one.y < 170){
 									player[0].character = new Character(linkPic);
+								} else {
+									if(choose.one.x > 410 && choose.one.x < 490 && choose.one.y > 90 && choose.one.y < 170) {
+										player[0].character = new Character(randomPic);
+									}
 								}
 							}
             }
@@ -311,6 +328,10 @@ function draw() {
               } else{
 								if(choose.two.x > 320 && choose.two.x < 400 && choose.two.y > 90 && choose.two.y < 170){
 									player[1].character = new Character(linkPic);
+								} else {
+									if(choose.two.x > 410 && choose.two.x < 490 && choose.two.y > 90 && choose.two.y < 170) {
+										player[1].character = new Character(randomPic);
+									}
 								}
 							}
             }
@@ -339,6 +360,10 @@ function draw() {
               } else{
 								if(choose.three.x > 320 && choose.three.x < 400 && choose.three.y > 90 && choose.three.y < 170){
 									player[2].character = new Character(linkPic);
+								} else {
+									if(choose.three.x > 410 && choose.three.x < 490 && choose.three.y > 90 && choose.three.y < 170) {
+										player[2].character = new Character(randomPic);
+									}
 								}
 							}
             }
@@ -367,6 +392,10 @@ function draw() {
               } else{
 								if(choose.four.x > 320 && choose.four.x < 400 && choose.four.y > 90 && choose.four.y < 170){
 									player[3].character = new Character(linkPic);
+								} else {
+									if(choose.four.x > 410 && choose.four.x < 490 && choose.four.y > 90 && choose.four.y < 170) {
+										player[3].character = new Character(randomPic);
+									}
 								}
 							}
             }
@@ -402,33 +431,38 @@ function draw() {
     rect(240,440,200,150,10);
     rect(460,440,200,150,10);
     rect(680,440,200,150,10);
-    fill(220,130,130);
+    //fill(220,130,130);//team
+		player[0].team.fill();
     textSize(30);
     if(player[0].cpu === false){
       text("Player 1",120,470);
     }else{
       text("CPU 1",120,470);
     }
-    fill(130,130,220);
+    //fill(130,130,220);//team
+		player[1].team.fill();
     if(player[1].cpu === false){
       text("Player 2",340,470);
     }else{
       text("CPU 2",340,470);
     }
-    fill(130,220,130);
+    //fill(130,220,130);
+		player[2].team.fill();
     if(player[2].cpu === false){
       text("Player 3",560,470);
     }else{
       text("CPU 3",560,470);
     }
-    fill(220,130,220);
+    //fill(220,130,220);//team
+		player[3].team.fill();
     if(player[3].cpu === false){
       text("Player 4",780,470);
     }else{
       text("CPU 4",780,470);
     }
     choose.place = false;
-    fill(220,130,130);
+    //fill(220,130,130);
+		player[0].team.fill();
     ellipse(choose.one.x,choose.one.y,50,50);//
     if(dist(mouseX,mouseY,choose.one.x,choose.one.y) < 25 && mouseIsPressed && choose.place === false){
       choose.one.x = mouseX;
@@ -455,7 +489,8 @@ function draw() {
     choose.two.y = constrain(choose.two.y,25,475);
     choose.three.y = constrain(choose.three.y,25,475);
     choose.four.y = constrain(choose.four.y,25,475);
-    fill(130,130,220);
+    //fill(130,130,220);
+		player[1].team.fill();
     ellipse(choose.two.x,choose.two.y,50,50);//
     if(dist(mouseX,mouseY,choose.two.x,choose.two.y) < 25 && mouseIsPressed && choose.place === false){
       choose.two.x = mouseX;
@@ -474,7 +509,8 @@ function draw() {
     if(keys[controls[1].right]){
       choose.two.x += 3;
     }//
-    fill(130,220,130);
+    //fill(130,220,130);
+		player[2].team.fill();
     ellipse(choose.three.x,choose.three.y,50,50);//
     if(dist(mouseX,mouseY,choose.three.x,choose.three.y) < 25 && mouseIsPressed && choose.place === false){
       choose.three.x = mouseX;
@@ -493,7 +529,8 @@ function draw() {
     if(keys[controls[2].right]){
       choose.three.x += 3;
     }//
-    fill(220,130,220);
+    //fill(220,130,220);
+		player[3].team.fill();
     ellipse(choose.four.x,choose.four.y,50,50);//
     if(dist(mouseX,mouseY,choose.four.x,choose.four.y) < 25 && mouseIsPressed && choose.place === false){
       choose.four.x = mouseX;
@@ -519,9 +556,15 @@ function draw() {
       rect(10,225,880,50,5);
       fill(0,0,0,200);
       text("Press attack to start",450,250);
+			/*teams = [player[0].team];*/
       for(var i = 0;i < player.length;i ++){
-        if(player[i].character.pic !== undefined && keys[controls[i].attack]){
-          menu = 4;
+				/*for(var u = 0;u < teams.length;u ++) {
+					if(!player[i].team.equals(teams[u]) && player[i].character.pic !== undefined) {
+						teams.push(player[i].team);
+					}
+				}*/
+        if(player[i].character.pic !== undefined && keys[controls[i].attack]/* && teams.length > 1*/){
+          menu = 6;
 					arena.formArena();
 					for(var p = 0;p < player.length;p ++) {
 						player[p].damage = 0;
@@ -570,6 +613,8 @@ function draw() {
       scale(constrain(trans.scale*(9/10), 0.2, 1.5));
       arena.formArena();
       imageMode(CENTER);
+			
+			teamCount = 0;
       picCount = 0;
       for(var i = 0;i < player.length;i ++){
 				if(!player[i].cpu) {
@@ -577,12 +622,23 @@ function draw() {
 						if(player[i].inv > 0){
 							player[i].inv --;
 						}
+						
+						addPic = true;
+						for(var p = 0;p < i;p ++) {
+							if(player[i].team.equals(player[p].team)) {
+								addPic = false;
+							}
+						}
+						if(addPic) {//turns picCount into team count 
+							teamCount ++;
+						}
 						picCount ++;
+						
 						if(player[i].inv < 1 || player[i].inv % 2 === 0){
 							player[i].character.animation.draw(player[i].x, player[i].y, 50, 60);
 							//image(player[i].character.pic,player[i].x,player[i].y,50,60);
 						}
-						if(i === 0){
+						/*if(i === 0){
 							fill(220,130,130);
 						}
 						if(i === 1){
@@ -593,7 +649,8 @@ function draw() {
 						}
 						if(i === 3){
 							fill(220,130,220);
-						}
+						}*/
+						player[i].team.fill();
 						textSize(25);
 						if(!player[i].cpu) {
 							text("Player " + (i + 1),player[i].x,player[i].y - 40);
@@ -731,55 +788,57 @@ function draw() {
 						if(keys[controls[i].special] && !player[i].attacking && !player[i].shield) {
 							player[i].character.special(i);
 						}
-					}
-					for(var u = 0;u < attack.length;u ++){
-						if(i === attack[u].player){
-							player[i].attacking = true;
-						}
-						fill(0,0,0);
-						attack[u].time --;
-						rect(attack[u].x,attack[u].y,attack[u].w,attack[u].h);
-						if(attack[u].x + attack[u].w > player[i].x - 25 && attack[u].x < player[i].x + 25 && attack[u].y + attack[u].h > player[i].y - 30 && attack[u].y < player[i].y + 30){
-							if(player[i].x >= attack[u].x + attack[u].w/2 && i !== attack[u].player){
-								if(player[i].inv < 1){
-									if(!player[i].shield) {
-										player[i].damage += attack[u].damage;
-										player[i].xVel += player[i].damage *(3/2)* attack[u].launch * player[i].character.launch/2;
-										player[i].yVel -= player[i].damage *(2/3)* attack[u].launch * player[i].character.launch/2;
-									} else {
-										player[i].damage += ceil(attack[u].damage / 3);
-										player[i].shieldNum -= 3 * attack[u].damage;
-										player[i].xVel += player[i].damage *(3/2)* attack[u].launch * player[i].character.launch/5;
-										player[i].yVel -= player[i].damage *(2/3)* attack[u].launch * player[i].character.launch/5;
-									}
-									attack[u].time = 0;
-									player[i].inv = player[attack[u].player].character.inv;
-								}
-							}else{
-								if(player[i].x < attack[u].x + attack[u].w/2 && i !== attack[u].player){
+						for(var u = 0;u < attack.length;u ++){
+							if(i === attack[u].player){
+								player[i].attacking = true;
+							}
+							fill(0,0,0);
+							if(attack[u].player === i) {
+								attack[u].time -= 4;
+							}
+							rect(attack[u].x,attack[u].y,attack[u].w,attack[u].h);
+							if(attack[u].x + attack[u].w > player[i].x - 25 && attack[u].x < player[i].x + 25 && attack[u].y + attack[u].h > player[i].y - 30 && attack[u].y < player[i].y + 30){
+								if(player[i].x >= attack[u].x + attack[u].w/2 && i !== attack[u].player && !player[i].team.equals(player[attack[u].player].team)){
 									if(player[i].inv < 1){
 										if(!player[i].shield) {
 											player[i].damage += attack[u].damage;
-											player[i].xVel -= player[i].damage *(3/2)* attack[u].launch * player[i].character.launch/2;
+											player[i].xVel += player[i].damage *(3/2)* attack[u].launch * player[i].character.launch/2;
 											player[i].yVel -= player[i].damage *(2/3)* attack[u].launch * player[i].character.launch/2;
 										} else {
 											player[i].damage += ceil(attack[u].damage / 3);
 											player[i].shieldNum -= 3 * attack[u].damage;
-											player[i].xVel -= player[i].damage *(3/2)* attack[u].launch * player[i].character.launch/5;
+											player[i].xVel += player[i].damage *(3/2)* attack[u].launch * player[i].character.launch/5;
 											player[i].yVel -= player[i].damage *(2/3)* attack[u].launch * player[i].character.launch/5;
 										}
 										attack[u].time = 0;
 										player[i].inv = player[attack[u].player].character.inv;
 									}
+								}else{
+									if(player[i].x < attack[u].x + attack[u].w/2 && i !== attack[u].player && !player[i].team.equals(player[attack[u].player].team)){
+										if(player[i].inv < 1){
+											if(!player[i].shield) {
+												player[i].damage += attack[u].damage;
+												player[i].xVel -= player[i].damage *(3/2)* attack[u].launch * player[i].character.launch/2;
+												player[i].yVel -= player[i].damage *(2/3)* attack[u].launch * player[i].character.launch/2;
+											} else {
+												player[i].damage += ceil(attack[u].damage / 3);
+												player[i].shieldNum -= 3 * attack[u].damage;
+												player[i].xVel -= player[i].damage *(3/2)* attack[u].launch * player[i].character.launch/5;
+												player[i].yVel -= player[i].damage *(2/3)* attack[u].launch * player[i].character.launch/5;
+											}
+											attack[u].time = 0;
+											player[i].inv = player[attack[u].player].character.inv;
+										}
+									}
 								}
 							}
-						}
-						
-						playAttack(u, i);//Runs the attacks
-						
-						if(attack[u].time <= 0){
-							player[attack[u].player].attacking = false;
-							attack.splice(u,1);
+
+							playAttack(u, i);//Runs the attacks
+
+							if(attack[u].time <= 0){
+								player[attack[u].player].attacking = false;
+								attack.splice(u,1);
+							}
 						}
 					}
 				}//!cpu if statement
@@ -796,7 +855,7 @@ function draw() {
 			playersDown = 0;
       for(var i = 0;i < player.length;i ++){
 				if(player[i].character.pic != undefined && player[i].alive) {
-					if(i === 0){
+					/*if(i === 0){
 						fill(220,130,130,200);
 					}
 					if(i === 1){
@@ -807,7 +866,8 @@ function draw() {
 					}
 					if(i === 3){
 						fill(220,130,220,200);
-					}
+					}*/
+					player[i].team.fill();
 					rect((i-playersDown) * 900/picCount,450,900/picCount,50,10);
 					fill(50 + (player[i].damage * 2),50 - player[i].damage,50 - player[i].damage,200);
 					if(!player[i].cpu) {
@@ -821,11 +881,11 @@ function draw() {
 					playersDown ++;
 				}
       }
-			if(picCount <= 1) {
+			if(teamCount <= 1) {
 				menu = 5;
 				for(var i = 0;i < player.length;i ++) {
 					if(player[i].alive && player[i].character.pic != undefined) {
-						winner = i;
+						winner = player[i].team;
 					}
 				}
 			}
@@ -852,26 +912,63 @@ function draw() {
   }//In battle
 	if(menu === 5){//After a battle
 		background(0);
-		textSize(40);
+		textSize(25);
 		fill(255, 255, 255);
-		text(player[winner].name() + " Wins!", 450, 100);
-		if(!player[winner].cpu) {
-			text("Player " + (winner+1), 450, 150);
-		} else {
-			text("CPU " + (winner+1), 450, 150);
+		winnerCount = 0;
+		for(var i = 0;i < player.length;i ++) {
+			if(player[i].team.equals(winner)) {
+				winnerCount ++;
+			}
 		}
 		playersDown = 0;
 		for(var i = 0;i < player.length;i ++) {
-			if(player[i].character.pic != undefined && i != winner) {
-				image(player[i].character.pic, 430 + 60*(i-playersDown), 330, 50, 60);
+			if(player[i].team.equals(winner) && player[i].character.pic != undefined) {
+				text(player[i].name() + " Wins!", 450+150*(i-playersDown)-75*(winnerCount-1), 100);
+				if(!player[i].cpu) {
+					text("Player " + (i+1), 450+150*(i-playersDown)-75*(winnerCount-1), 150);
+				} else {
+					text("CPU " + (i+1), 450+150*(i-playersDown)-75*(winnerCount-1), 150);
+				}
+				image(player[i].character.pic, 400+150*(i-playersDown)-75*(winnerCount-1), 190, 100, 120);
 			} else {
 				playersDown ++;
 			}
 		}
-		image(player[winner].character.pic, 390, 190, 100, 120);
+		playersDown = 0;
+		for(var i = 0;i < player.length;i ++) {
+			if(player[i].character.pic != undefined && !player[i].team.equals(winner)) {
+				image(player[i].character.pic, 460 + 60*(i-playersDown), 330, 50, 60);
+			} else {
+				playersDown ++;
+			}
+		}
 		textSize(25);
 		text("Click to continue", 450, 400);
 	}//After a battle
+	if(menu === 6){
+		arenaBackButton();
+		
+		for(var i = 0;i < 5;i ++) {
+			for(var u = 0;u < 4;u ++) {
+				fill(100);
+				rect(265+i * 75, u * 75 + 50, 70, 70, 10);
+				textSize(17);
+				fill(255);
+				text(setArena(5*u+i), 302+i*75, 87+u*75);
+				if(mouseX > 265+i*75 && mouseX < 335+i*75 && mouseY > 50+u*75 && mouseY < 120+u*75) {
+					arena = new Arena(setArena(5*u + i));
+					if(mouseIsPressed) {
+						menu = 4;
+					}
+				}
+			}
+		}
+		
+		fill(255);
+		textSize(50);
+		text("Arena: " + arena.name, 450, 400);
+	}//Arena select
+	//menu=6;
   /*stroke(255,255,255);
   line(450,0,450,500);//debug
   line(0,250,900,250);//debug
@@ -891,34 +988,58 @@ function draw() {
 
 function mouseClicked(){
   if(menu === 2 && choose.place === false) {
-    if(mouseX > 20 && mouseX < 220 && mouseY > 290 && mouseY < 490){
+		if(mouseX > 15 && mouseX < 55 && mouseY > 45 && mouseY < 85 && allPlayerStock > 1) {
+			allPlayerStock --;
+			for(var i = 0;i < player.length;i ++) {
+				player[i].resetLives();
+			}
+		}
+		if(mouseX > 175 && mouseX < 215 && mouseY > 45 && mouseY < 85 && allPlayerStock < 99) {
+			allPlayerStock ++;
+			for(var i = 0;i < player.length;i ++) {
+				player[i].resetLives();
+			}
+		}
+    if(mouseX > 20 && mouseX < 220 && mouseY > 290 && mouseY < 440){
       if(player[0].cpu === true){
         player[0].cpu = false;
       }else{
         player[0].cpu = true;
       }
     }
-    if(mouseX > 240 && mouseX < 440 && mouseY > 290 && mouseY < 490){
+		if(mouseX > 20 && mouseX < 220 && mouseY > 440) {
+			player[0].team = player[0].team.nextColor();
+		}
+    if(mouseX > 240 && mouseX < 440 && mouseY > 290 && mouseY < 440){
       if(player[1].cpu === true){
         player[1].cpu = false;
       }else{
         player[1].cpu = true;
       }
     }
-    if(mouseX > 460 && mouseX < 660 && mouseY > 290 && mouseY < 490){
+		if(mouseX > 240 && mouseX < 440 && mouseY > 440) {
+			player[1].team = player[1].team.nextColor();
+		}
+    if(mouseX > 460 && mouseX < 660 && mouseY > 290 && mouseY < 440){
       if(player[2].cpu === true){
         player[2].cpu = false;
       }else{
         player[2].cpu = true;
       }
     }
-    if(mouseX > 680 && mouseX < 880 && mouseY > 290 && mouseY < 490){
+		if(mouseX > 460 && mouseX < 660 && mouseY > 440) {
+			player[2].team = player[2].team.nextColor();
+		}
+    if(mouseX > 680 && mouseX < 880 && mouseY > 290 && mouseY < 440){
       if(player[3].cpu === true){
         player[3].cpu = false;
       }else{
         player[3].cpu = true;
       }
     }
+		if(mouseX > 680 && mouseX < 880 && mouseY > 440) {
+			player[3].team = player[3].team.nextColor();
+		}
   }
   if(menu === 0) {//Main menu
     if(dist(mouseX,mouseY,700,350) < 50 || (mouseX > 700 && mouseX < 850 && mouseY > 300 && mouseY < 400)){
