@@ -13,7 +13,7 @@ function Arena(name) {
 				new Spawn(82, -30),
 				new Spawn(225, -30)
 			];
-			this.bounds = [-250, 250];
+			this.bounds = [-260, 260];
 			this.blocks = [
 				new Block(-250, 0, 500, 200)
 			];
@@ -25,7 +25,7 @@ function Arena(name) {
 				new Spawn(52, -5),
 				new Spawn(170, -5)
 			];
-			this.bounds = [-250, 250];
+			this.bounds = [-260, 260];
 			this.blocks = [
 				new Block(-250, 50, 500, 50),
 				new Block(-250, -200, 50, 300),
