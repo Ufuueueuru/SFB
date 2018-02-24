@@ -33,14 +33,19 @@ var fawful4;
 var fawful5;
 var fawful6;
 var fawful7;
+
+var glitch1;
+var glitch2;
+var glitch3;
 //Animation images
 var playersDown = 0;//Finds the amount of players not in the match
-var winner = 0;//Who won the last match
+var winner;//Who won the last match
+var winnerCount = 0;
 var trans = {x: 0, y: 0, scale: 1, count: 0};
 var playerNum = 1;
 var keySelect = [false,0];
 var menu = 3;//0: main menu, 1: settings, 2: character select, 3: intro, 4: actual battle
-var arena = new Arena("Classic");//what arena you are in
+var arena = new Arena("Arena");//what arena you are in
 var keys = [];
 var fire = [];
 
@@ -51,8 +56,10 @@ var glitchPic;
 var sansPic;
 var balosPic;
 var linkPic;
-var fawfulPic;//images
+var fawfulPic;
+var randomPic;//images
 
+var allPlayerStock = 3;//How much stock each player gets
 var ai = new AI();
 var slideX = [0,0];
 var slideY = [0,0];
@@ -110,6 +117,16 @@ function backButton(){
     fire = [];
   }
 }
+function arenaBackButton(){
+  textSize(45);
+  fill(255,90,90);
+  rect(0,0,100,100);
+  fill(0,0,0);
+  text("Back",50,50);
+  if(mouseX < 100 && mouseY < 100 && mouseIsPressed){
+    menu = 2;
+  }
+}
 var attack = [
   {
     x: 0,
@@ -123,8 +140,26 @@ var attack = [
   }
 ];
 var player = [
-	new Player(0, 0, false, 0, 0, 0, 0, 1, false, 0, 3, true, true, new Character(undefined)),
-	new Player(0, 0, true, 0, 0, 0, 0, 1, false, 0, 3, true, true, new Character(undefined)),
-	new Player(0, 0, true, 0, 0, 0, 0, 1, false, 0, 3, true, true, new Character(undefined)),
-	new Player(0, 0, true, 0, 0, 0, 0, 1, false, 0, 3, true, true, new Character(undefined))
+	new Player(0, 0, false, 0, 0, 0, 0, 1, false, 0, true, true, new Color(220, 130, 130), new Character(undefined)),
+	new Player(0, 0, true, 0, 0, 0, 0, 1, false, 0, true, true, new Color(130, 130, 220), new Character(undefined)),
+	new Player(0, 0, true, 0, 0, 0, 0, 1, false, 0, true, true, new Color(130, 220, 130), new Character(undefined)),
+	new Player(0, 0, true, 0, 0, 0, 0, 1, false, 0, true, true, new Color(220, 130, 220), new Character(undefined))
 ];
+var addPic = true;
+var pictures = 34;
+var loadCounter = 0;
+function loaded() {
+	loadCounter ++;
+	loading = floor(loadCounter/pictures * 100);
+}
+
+function setArena(i) {
+	switch(i) {
+		case 0:
+			return "Classic";
+		case 1:
+			return "Arena";
+		default:
+			return "Classic";
+	}
+}
