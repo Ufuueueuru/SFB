@@ -1,4 +1,4 @@
-function Player(x, y, cpu, damage, xVel, yVel, look, dir, attacking, inv, lives, alive, airSpecial, character) {
+function Player(x, y, cpu, damage, xVel, yVel, look, dir, attacking, inv, alive, airSpecial, team, character) {
 	this.x = x;//x value
   this.y = y;//y value
 	this.shield = false;//If your shield is out
@@ -12,11 +12,16 @@ function Player(x, y, cpu, damage, xVel, yVel, look, dir, attacking, inv, lives,
   this.dir = dir;//1: right 2: left
   this.attacking = attacking;//If you are attacking
   this.inv = inv;//How much invinsibility you have
-	this.lives = lives;//How many lives you have
+	this.lives = allPlayerStock;//How many lives you have
 	this.alive = alive;//If you are alive
 	this.airSpecial = airSpecial;//Stops you from using special attack twice in the air
+	this.team = team;//Should be a color for what team you are on
   this.character = character;//The character object
 	this.difficulty = 9;//1-9 How hard cpus are
+	
+	this.resetLives = function() {
+		this.lives = allPlayerStock;
+	}
 	
 	this.reset = function() {
 		this.x = 0;//x value
@@ -31,7 +36,7 @@ function Player(x, y, cpu, damage, xVel, yVel, look, dir, attacking, inv, lives,
 		this.dir = 1;//1: right 2: left
 		this.attacking = false;//If you are attacking
 		this.inv = 0;//How much invinsibility you have
-		this.lives = 3;//How many lives you have
+		this.lives = allPlayerStock;//How many lives you have
 		this.alive = true;//If you are alive
 		this.character = new Character(undefined);
 		this.airSpecial = false;//Stops you from using special attack twice in the air
