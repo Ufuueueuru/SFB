@@ -1,6 +1,40 @@
 function Character(pic) {
 	this.pic = pic;
 	
+	this.charge = 0;
+	
+	if(this.pic === randomPic) {
+		this.random = Math.ceil(Math.random()*7);
+		
+		if(this.random === 1) {
+			this.pic = quotePic;
+		}
+		
+		if(this.random === 2) {
+			this.pic = fawfulPic;
+		}
+		
+		if(this.random === 3) {
+			this.pic = sansPic;
+		}
+		
+		if(this.random === 4) {
+			this.pic = floweyPic;
+		}
+		
+		if(this.random === 5) {
+			this.pic = glitchPic;
+		}
+		
+		if(this.random === 6) {
+			this.pic = balosPic;
+		}
+		
+		if(this.random === 7) {
+			this.pic = linkPic;
+		}
+	}
+	
 	if(true) {
 		this.range = 100;
 		
@@ -45,7 +79,7 @@ function Character(pic) {
 		}
 
 		if(this.pic === glitchPic) {
-			this.animation = new Animation(0, 0, 36, [glitchPic], [], [glitchPic], []);
+			this.animation = new Animation(0, 0, 8, [glitchPic, glitch1, glitch2, glitch3], [], [glitchPic, glitch3, glitch1, glitch2], []);
 		}
 
 		if(this.pic === sansPic) {
@@ -67,16 +101,13 @@ function Character(pic) {
 			this.launch = 1.2;
 		}
 		if(this.pic === balosPic) {
-			this.launch = 1.1;
+			this.launch = 1.2;
 		}
 		if(this.pic === fawfulPic) {
-			this.launch = 0.8;
+			this.launch = 0.9;
 		}
 		if(this.pic === floweyPic) {
 			this.launch = 1.4;
-		}
-		if(this.pic === linkPic) {
-			this.launch = 1.1;
 		}
 	}//Vulnerability
 	
@@ -86,16 +117,19 @@ function Character(pic) {
 			this.inv = 2;
 		}
 		if(this.pic === balosPic) {
-			this.inv = 30;
+			this.inv = 45;
 		}
 		if(this.pic === floweyPic) {
 			this.inv = 15;
 		}
 		if(this.pic === linkPic) {
-			this.inv = 45;
+			this.inv = 25;
 		}
 		if(this.pic === glitchPic) {
 			this.inv = 200;
+		}
+		if(this.pic === quotePic) {
+			this.inv = 30;
 		}
 	}//Invinsibility
 	
@@ -598,6 +632,77 @@ function Character(pic) {
 						type: "glitch special",
 						dir: 1
 					});
+				}
+			}
+		}
+		
+		if(this.pic === linkPic) {
+			this.special = function(index) {
+				if(player[index].airSpecial) {
+					if(player[index].look === 1) {
+						player[index].attacking = true;
+						attack.push({
+							x: player[index].x - 5,
+							y: player[index].y - 70,
+							w: 15,
+							h: 40,
+							time: 35,
+							player: index,
+							damage: 1,
+							launch: 0.6,
+							type: "sword up jump",
+							dir: 1
+						});
+					} else {
+						if(player[index].look === 2) {
+							/*player[index].attacking = true;
+							attack.push({
+								x: player[index].x - 7,
+								y: player[index].y - 20,
+								w: 15,
+								h: 20,
+								time: 60,
+								player: index,
+								damage: 12,
+								launch: 0.1,
+								type: "",
+								dir: 1
+							});*/
+						} else {
+							if(player[index].dir === 2){
+								this.charge = 0;
+								player[index].attacking = true;
+								attack.push({
+									x: player[index].x - 45,
+									y: player[index].y,
+									w: 0,
+									h: 10,
+									time: 200,
+									player: index,
+									damage: 1,
+									launch: 0.1,
+									type: "bow",
+									dir: 2
+								});
+							}
+							if(player[index].dir === 1){
+								this.charge = 0;
+								player[index].attacking = true;
+								attack.push({
+									x: player[index].x + 15,
+									y: player[index].y,
+									w: 0,
+									h: 10,
+									time: 200,
+									player: index,
+									damage: 1,
+									launch: 0.1,
+									type: "bow",
+									dir: 1
+								});
+							}
+						}
+					}
 				}
 			}
 		}
