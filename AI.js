@@ -6,7 +6,7 @@ function AI() {
 		//AI tendencies
 		this.dist[i] = 9999;
 		for(var p = 0;p < player.length;p ++) {
-			if(player[p].character.pic !== undefined && player[p].alive && i !== p && dist(player[i].x, player[i].y, player[p].x, player[p].y) < this.dist[i]) {
+			if(player[p].character.pic !== undefined && player[p].alive && !player[i].team.equals(player[p].team) && i !== p && dist(player[i].x, player[i].y, player[p].x, player[p].y) < this.dist[i]) {
 				this.target[i] = p;
 				this.dist[i] = dist(player[i].x, player[i].y, player[p].x, player[p].y);
 			}
@@ -132,12 +132,23 @@ function AI() {
 				if(player[i].inv > 0){
 					player[i].inv --;
 				}
+				
+				addPic = true;
+				for(var p = 0;p < i;p ++) {
+					if(player[i].team.equals(player[p].team)) {
+						addPic = false;
+					}
+				}
+				if(addPic) {//turns picCount into team count 
+					teamCount ++;
+				}
 				picCount ++;
+				
 				if(player[i].inv < 1 || player[i].inv % 2 === 0){
 					player[i].character.animation.draw(player[i].x, player[i].y, 50, 60);
 					//image(player[i].character.pic,player[i].x,player[i].y,50,60);
 				}
-				if(i === 0){
+				/*if(i === 0){
 					fill(220,130,130);
 				}
 				if(i === 1){
@@ -148,7 +159,8 @@ function AI() {
 				}
 				if(i === 3){
 					fill(220,130,220);
-				}
+				}*/
+				player[i].team.fill();
 				textSize(25);
 				if(!player[i].cpu) {
 					text("Player " + (i + 1),player[i].x,player[i].y - 40);
@@ -260,33 +272,39 @@ function AI() {
 					player[i].attacking = true;
 				}
 				fill(0,0,0);
-				attack[u].time --;
+				if(i === attack[u].player) {
+					attack[u].time -= 4;
+				}
 				rect(attack[u].x,attack[u].y,attack[u].w,attack[u].h);
 				if(attack[u].x + attack[u].w > player[i].x - 25 && attack[u].x < player[i].x + 25 && attack[u].y + attack[u].h > player[i].y - 30 && attack[u].y < player[i].y + 30){
-					if(player[i].x >= attack[u].x + attack[u].w/2 && i !== attack[u].player){
+					if(player[i].x >= attack[u].x + attack[u].w/2 && i !== attack[u].player && !player[i].team.equals(player[attack[u].player].team)){
 						if(player[i].inv < 1){
 							if(!player[i].shield) {
 								player[i].damage += attack[u].damage;
+								player[i].xVel += player[i].damage *(3/2)* attack[u].launch * player[i].character.launch/2;
+								player[i].yVel -= player[i].damage *(2/3)* attack[u].launch * player[i].character.launch/2;
 							} else {
-								player[i].damage += round(attack[u].damage / 3);
+								player[i].damage += ceil(attack[u].damage / 3);
 								player[i].shieldNum -= 3 * attack[u].damage;
+								player[i].xVel += player[i].damage *(3/2)* attack[u].launch * player[i].character.launch/5;
+								player[i].yVel -= player[i].damage *(2/3)* attack[u].launch * player[i].character.launch/5;
 							}
-							player[i].xVel += player[i].damage *(3/2)* attack[u].launch * player[i].character.launch;
-							player[i].yVel -= player[i].damage *(2/3)* attack[u].launch * player[i].character.launch;
 							attack[u].time = 0;
 							player[i].inv = player[attack[u].player].character.inv;
 						}
 					}else{
-						if(player[i].x < attack[u].x + attack[u].w/2 && i !== attack[u].player){
+						if(player[i].x < attack[u].x + attack[u].w/2 && i !== attack[u].player && !player[i].team.equals(player[attack[u].player].team)){
 							if(player[i].inv < 1){
 								if(!player[i].shield) {
 									player[i].damage += attack[u].damage;
+									player[i].xVel -= player[i].damage *(3/2)* attack[u].launch * player[i].character.launch/2;
+									player[i].yVel -= player[i].damage *(2/3)* attack[u].launch * player[i].character.launch/2;
 								} else {
-									player[i].damage += round(attack[u].damage / 3);
+									player[i].damage += ceil(attack[u].damage / 3);
 									player[i].shieldNum -= 3 * attack[u].damage;
+									player[i].xVel -= player[i].damage *(3/2)* attack[u].launch * player[i].character.launch/5;
+									player[i].yVel -= player[i].damage *(2/3)* attack[u].launch * player[i].character.launch/5;
 								}
-								player[i].xVel -= player[i].damage *(3/2)* attack[u].launch * player[i].character.launch;
-								player[i].yVel -= player[i].damage *(2/3)* attack[u].launch * player[i].character.launch;
 								attack[u].time = 0;
 								player[i].inv = player[attack[u].player].character.inv;
 							}
