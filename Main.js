@@ -1,5 +1,2176 @@
+var Music = {
+	main: undefined,
+	intro: undefined,
+	theme: undefined
+};
+function Color(r, g, b) {
+	this.r = r;
+	this.g = g;
+	this.b = b;
+	
+	this.fill = function() {
+		fill(this.r, this.g, this.b);
+	}
+	
+	this.stroke = function() {
+		stroke(this.r, this.g, this.b);
+	}
+	
+	this.equals = function(color) {
+		if(this.r === color.r && this.g === color.g && this.b === color.b) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	this.nextColor = function() {
+		if(this.r === 220 && this.g === 130 && this.b === 130) {
+			/*this.r = 130;
+			this.g = 130;
+			this.b = 220;*/
+			return new Color(130, 130, 220);
+		}
+		if(this.r === 130 && this.g === 130 && this.b === 220) {
+			/*this.r = 130;
+			this.g = 220;
+			this.b = 130;*/
+			return new Color(130, 220, 130);
+		}
+		if(this.r === 130 && this.g === 220 && this.b === 130) {
+			/*this.r = 220;
+			this.g = 130;
+			this.b = 220;*/
+			return new Color(220, 130, 220);
+		}
+		if(this.r === 220 && this.g === 130 && this.b === 220) {
+			/*this.r = 220;
+			this.g = 130;
+			this.b = 130;*/
+			return new Color(220, 130, 130);
+		}
+	}
+}
+function Spawn(x, y) {
+	this.x = x;
+	this.y = y;
+}
+function AI() {
+	this.target = [0, 0, 0, 0];
+	this.dist = [0, 0, 0, 0];
+	
+	this.calculate = function(i) {
+		//AI tendencies
+		this.dist[i] = 9999;
+		for(var p = 0;p < player.length;p ++) {
+			if(player[p].character.pic !== undefined && player[p].alive && !player[i].team.equals(player[p].team) && i !== p && dist(player[i].x, player[i].y, player[p].x, player[p].y) < this.dist[i]) {
+				this.target[i] = p;
+				this.dist[i] = dist(player[i].x, player[i].y, player[p].x, player[p].y);
+			}
+		}
+		
+		if(player[this.target[i]].x - player[i].x > 30) {//Go towards the player  //30 is before the change
+			cpuControls[i].right = true;
+		} else {
+			cpuControls[i].right = false;
+		}
+		
+		if(player[this.target[i]].x - player[i].x < -30) {//Go towards the player  //-30 is the before change
+			cpuControls[i].left = true;
+		} else {
+			cpuControls[i].left = false;
+		}
+		
+		/*if(player[this.target[i]].x > player[i].x) {
+			player[i].dir = 1;
+		}
+		
+		if(player[this.target[i]].x < player[i].x) {
+			player[i].dir = 2;
+		}*/
+		//I don't know if this works
+		
+		if(dist(player[this.target[i]].x, player[this.target[i]].y, player[i].x, player[i].y) < player[i].character.range && random(0,1) > .4-(player[i].difficulty/10)) {//Attack when close
+			cpuControls[i].attack = true;
+		} else {
+			cpuControls[i].attack = false;
+		}
+		
+		if(player[i].y - player[this.target[i]].y > 100 && random(0,1) > .6-(player[i].difficulty/10)) {//Use special to go up to the player
+			cpuControls[i].up = true;
+			cpuControls[i].special = true;
+		} else {
+			cpuControls[i].special = false;
+		}
+		/*
+		if(player[i].y - player[this.target[i]].y > 30 && player[i].y - player[this.target[i]].y < 1000 && player[i].x - player[this.target[i]].x < 50 && player[i].x - player[this.target[i]].x > -50) {
+			if(player[this.target[i]].damage > 50) {//not sure
+				cpuControls[i].up = false;
+				cpuControls[i].down = true;
+				cpuControls[i].special = true;
+			} else {
+				cpuControls[i].down = false;
+			}
+		} else {
+			cpuControls[i].down = false;
+		}*/
+		
+		if(player[this.target[i]].y - player[i].y < -30) {//Jump up to the player
+			cpuControls[i].up = true;
+		} else {
+			cpuControls[i].up = false;
+		}
+		
+		if(player[this.target[i]].y > 300 || player[this.target[i]].x < arena.bounds[0] || player[this.target[i]].x > arena.bounds[1]) {//Don't fall off the edge
+			if(player[i].difficulty > 2) {
+				cpuControls[i].left = false;
+				cpuControls[i].right = false;
+			}
+		}
+		
+		if(dist(player[i].x, player[i].y, player[this.target[i]].x, player[this.target[i]].y) < 30) {//Attempts to get rid of stale mates
+			if(random(0,1) > .5) {
+				cpuControls[i].right = true;
+				cpuControls[i].left = false;
+			} else {
+				cpuControls[i].left = true;
+				cpuControls[i].right = false;
+			}
+		}
+		
+		if(player[i].x < arena.bounds[0] && player[i].difficulty > 1) {//Stays away from the edges
+			cpuControls[i].right = true;
+			cpuControls[i].left = false;
+		}
+		
+		if(player[i].x > arena.bounds[1] && player[i].difficulty > 1) {//Stays away from the edges
+			cpuControls[i].right = false;
+			cpuControls[i].left = true;
+		}
+		
+		if(player[i].yVel > 8) {//jumps when going down too fast
+			cpuControls[i].up = true;
+		}
+		
+		if(player[i].yVel > 16 && random(0,1) > .9-(player[i].difficulty/10)) {//Special jumps when going down too fast
+			cpuControls[i].up = true;
+			cpuControls[i].special = true;
+		}
+		
+		if(random(0,1) > .9-(player[i].difficulty/20) && cpuControls[i].attack && dist(player[i].x, player[i].y, player[this.target[i]].x, player[this.target[i]].y) < 40) {
+			cpuControls[i].down = true;
+			cpuControls[i].special = true;
+			cpuControls[i].attack = false;
+			cpuControls[i].up = false;
+		} else {
+			cpuControls[i].down = false;
+		}
+		
+		for(var u = 0;u < attack.length;u ++) {
+			if(attack[u].player !== i && random(0,1) > .9-(player[i].difficulty/10) && player[i].inv < 50 - 3*player[i].difficulty) {
+				if(attack[u].x-10 + attack[u].w+20 > player[i].x-10 - 25 && attack[u].x-10 < player[i].x-10 + 25 && attack[u].y-10 + attack[u].h+20 > player[i].y-10 - 30 && attack[u].y-10 < player[i].y-10 + 30){
+					cpuControls[i].shield = true;
+				} else {
+					cpuControls[i].shield = false;
+				}
+			} else {
+				cpuControls[i].shield = false;
+			}
+		}
+		
+		if(attack.length < 1) {
+			cpuControls[i].shield = false;
+		}
+	}
+	
+	this.run = function(i) {
+		if(player[i].cpu) {
+			if(player[i].character.pic !== undefined && player[i].alive){
+				if(player[i].inv > 0){
+					player[i].inv --;
+				}
+				
+				addPic = true;
+				for(var p = 0;p < i;p ++) {
+					if(player[i].team.equals(player[p].team) && player[p].alive) {
+						addPic = false;
+					}
+				}
+				if(addPic) {//turns picCount into team count 
+					teamCount ++;
+				}
+				picCount ++;
+				
+				if(player[i].inv < 1 || player[i].inv % 2 === 0){
+					player[i].character.animation.draw(player[i].x, player[i].y, 50, 60);
+					//image(player[i].character.pic,player[i].x,player[i].y,50,60);
+				}
+				/*if(i === 0){
+					fill(220,130,130);
+				}
+				if(i === 1){
+					fill(130,130,220);
+				}
+				if(i === 2){
+					fill(130,220,130);
+				}
+				if(i === 3){
+					fill(220,130,220);
+				}*/
+				player[i].team.fill();
+				textSize(25);
+				if(!player[i].cpu) {
+					text("Player " + (i + 1),player[i].x,player[i].y - 40);
+				} else {
+					text("CPU " + (i + 1),player[i].x,player[i].y - 40);
+				}
+
+				if(player[i].shield) {
+					for(var s = 0;s < 50;s += 3) {
+						fill(255 - (4*player[i].shieldNum), 50, 55 + (4*player[i].shieldNum), 10 + s + (frameCount % 50));
+						ellipse(player[i].x, player[i].y, 50-s, 50-s);
+					}
+				}
+
+				if(player[i].xVel > 0){
+						player[i].xVel = floor(player[i].xVel*100)/110;
+				}else{
+						player[i].xVel = ceil(player[i].xVel*100)/110;
+				}
+				player[i].x += player[i].xVel;
+				player[i].y += player[i].yVel;
+				if(cpuControls[i].right && player[i].attacking === false && player[i].xVel < 2.5 && !player[i].shield){
+					player[i].xVel ++;
+					player[i].dir = 1;
+				}
+				if(cpuControls[i].left && player[i].attacking === false && player[i].xVel > -2.5 && !player[i].shield){
+					player[i].xVel --;
+					player[i].dir = 2;
+				}
+				
+				if(player[i].dir === 1) {//Makes the animation face the same way as the character
+					player[i].character.animation.dir = 0;
+				}
+				if(player[i].dir === 2) {//Makes the animation face the same way as the character
+					player[i].character.animation.dir = 2;
+				}
+				
+				if(cpuControls[i].up && player[i].attacking === false && !player[i].shield){
+					player[i].look = 1;
+				}
+				if(cpuControls[i].down && player[i].attacking === false && !player[i].shield){
+					player[i].look = 2;
+				}
+				if(!cpuControls[i].down && !cpuControls[i].up) {
+					player[i].look = 0;
+				}
+
+				if(cpuControls[i].shield && player[i].shieldNum > 40) {
+					player[i].shield = true;
+				}
+
+				if(player[i].shield && frameCount % 2 === 0) {
+					player[i].shieldNum --;
+				}
+
+				if(!cpuControls[i].shield || player[i].shieldNum <= 0) {
+					player[i].shield = false;
+				}
+
+				if(!player[i].shield && player[i].shieldNum < 200 && frameCount % 3 === 0) {
+					player[i].shieldNum ++;
+				}
+
+				if(cpuControls[i].left) {
+					if(!player[i].shield) {
+						player[i].character.animation.move(2);
+					}
+				} else {
+					if(cpuControls[i].right && !player[i].shield) {
+						player[i].character.animation.move(0);
+					}
+				}
+
+				if(!cpuControls[i].left && !cpuControls[i].right) {
+					player[i].character.animation.reset();
+				}
+
+				if(player[i].shield) {
+					player[i].character.animation.reset();
+				}
+
+				arena.collideCPU(i);
+				if(!player[i].ground) {
+					player[i].yVel += 0.4;
+				}
+				
+				if(player[i].y > 750 || player[i].x < -750 || player[i].x > 750 || player[i].y < -800){
+					player[i].lives --;
+					if(player[i].lives < 1) {
+						player[i].alive = false;
+					}
+					player[i].damage = 0;
+					player[i].inv = 50;
+					player[i].shieldNum = 200;
+					player[i].x = arena.spawn[i].x;
+					player[i].y = arena.spawn[i].y;
+					player[i].yVel = 0;
+					player[i].xVel = 0;
+				}
+				if(cpuControls[i].attack && !player[i].attacking && !player[i].shield){
+					player[i].character.attack(i);
+				}
+				if(cpuControls[i].special && !player[i].attacking && !player[i].shield) {
+					player[i].character.special(i);
+				}
+			}
+			for(var u = 0;u < attack.length;u ++){
+				if(i === attack[u].player){
+					player[i].attacking = true;
+				}
+				fill(0,0,0);
+				if(i === attack[u].player) {
+					attack[u].time -= 4;
+				}
+				rect(attack[u].x,attack[u].y,attack[u].w,attack[u].h);
+				if(attack[u].x + attack[u].w > player[i].x - 25 && attack[u].x < player[i].x + 25 && attack[u].y + attack[u].h > player[i].y - 30 && attack[u].y < player[i].y + 30){
+					if(player[i].x >= attack[u].x + attack[u].w/2 && i !== attack[u].player && !player[i].team.equals(player[attack[u].player].team)){
+						if(player[i].inv < 1){
+							if(!player[i].shield) {
+								player[i].damage += attack[u].damage;
+								player[i].xVel += player[i].damage *(3/2)* attack[u].launch * player[i].character.launch/2;
+								player[i].yVel -= player[i].damage *(2/3)* attack[u].launch * player[i].character.launch/2;
+							} else {
+								player[i].damage += ceil(attack[u].damage / 3);
+								player[i].shieldNum -= 3 * attack[u].damage;
+								player[i].xVel += player[i].damage *(3/2)* attack[u].launch * player[i].character.launch/5;
+								player[i].yVel -= player[i].damage *(2/3)* attack[u].launch * player[i].character.launch/5;
+							}
+							attack[u].time = 0;
+							player[i].inv = player[attack[u].player].character.inv;
+						}
+					}else{
+						if(player[i].x < attack[u].x + attack[u].w/2 && i !== attack[u].player && !player[i].team.equals(player[attack[u].player].team)){
+							if(player[i].inv < 1){
+								if(!player[i].shield) {
+									player[i].damage += attack[u].damage;
+									player[i].xVel -= player[i].damage *(3/2)* attack[u].launch * player[i].character.launch/2;
+									player[i].yVel -= player[i].damage *(2/3)* attack[u].launch * player[i].character.launch/2;
+								} else {
+									player[i].damage += ceil(attack[u].damage / 3);
+									player[i].shieldNum -= 3 * attack[u].damage;
+									player[i].xVel -= player[i].damage *(3/2)* attack[u].launch * player[i].character.launch/5;
+									player[i].yVel -= player[i].damage *(2/3)* attack[u].launch * player[i].character.launch/5;
+								}
+								attack[u].time = 0;
+								player[i].inv = player[attack[u].player].character.inv;
+							}
+						}
+					}
+				}
+				playAttack(u, i);
+				if(attack[u].time <= 0){
+					player[attack[u].player].attacking = false;
+					attack.splice(u,1);
+				}
+			}
+		}
+	}//Runs the physics of a player
+}
+function Block(x, y, width, height) {
+	this.x = x;
+	this.y = y;
+	this.width = width;
+	this.height = height;
+	
+	this.collide = function(i) {
+		/*if(!(player[i].x > -250 && player[i].x < 250 && player[i].y > -30 && player[i].y < 225)){
+			if(player[i].jump && keys[controls[i].up] && player[i].yVel > -2 && player[i].attacking === false && !player[i].shield){
+				player[i].yVel = -7;
+				player[i].jump = false;
+			}
+		}
+		if(player[i].x > -250 && player[i].x < 250 && player[i].y > -30 && player[i].y < 225){
+			arena.check.push(1);
+			player[i].airSpecial = true;
+			player[i].jump = true;
+			player[i].yVel = -0.7;
+			if(player[i].y + player[i].yVel <= -30){
+				player[i].yVel = 0;
+			}
+			if(keys[controls[i].up] && player[i].attacking === false && !player[i].shield){
+				player[i].yVel -= 7;
+			}
+		}
+		if(player[i].y > -20 && player[i].y < 215){
+			if(player[i].x > -255 && player[i].x < -230){
+				player[i].xVel = -1;
+			}
+			if(player[i].x < 255 && player[i].x > 230){
+				player[i].xVel = 1;
+			}
+		}
+		if(player[i].y > 170 && player[i].x > -250 && player[i].x < 250 && player[i].y < 225){
+			player[i].yVel = 5;
+		}*/
+		/*if(!(player[i].x > this.x-25 && player[i].x < this.x+this.width+25 && player[i].y > this.y-30 && player[i].y < this.y + this.height + 25)){
+			if(player[i].jump && keys[controls[i].up] && player[i].yVel > -2 && player[i].attacking === false && !player[i].shield){
+				player[i].yVel = -7;
+				player[i].jump = false;
+			}
+		}*/
+		if(player[i].x > this.x-25 && player[i].x < this.x+this.width+25 && player[i].y > this.y-30 && player[i].y < this.y + this.height){
+			arena.check.push(1);
+			player[i].airSpecial = true;
+			player[i].yVel = -0.7;
+			if(/*player[i].y + player[i].yVel <= -30 || */player[i].y < this.y - 28){
+				player[i].yVel = 0;
+			}
+			if(keys[controls[i].up] && player[i].attacking === false && !player[i].shield){
+				player[i].yVel -= 7;
+			}
+		}
+		if(player[i].y > this.y-20 && player[i].y < this.y + this.height){
+			if(player[i].x > this.x-30 && player[i].x < this.x+5){
+				player[i].xVel = -1.5;
+			}
+			if(player[i].x < this.x+this.width+30 && player[i].x > this.x+this.width+5){
+				player[i].xVel = 1.5;
+			}
+		}
+		if(player[i].y > this.y+this.height-30 && player[i].x > this.x-25 && player[i].x < this.x+this.width+25 && player[i].y < this.y+this.height+30){
+			player[i].yVel = 2;
+			player[i].y += player[i].yVel + 5;
+		}
+	}
+	
+	this.collideCPU = function(i) {
+		/*if(!(player[i].x > -250 && player[i].x < 250 && player[i].y > -30 && player[i].y < 225)){
+			if(player[i].jump && keys[controls[i].up] && player[i].yVel > -2 && player[i].attacking === false && !player[i].shield){
+				player[i].yVel = -7;
+				player[i].jump = false;
+			}
+		}
+		if(player[i].x > -250 && player[i].x < 250 && player[i].y > -30 && player[i].y < 225){
+			arena.check.push(1);
+			player[i].airSpecial = true;
+			player[i].jump = true;
+			player[i].yVel = -0.7;
+			if(player[i].y + player[i].yVel <= -30){
+				player[i].yVel = 0;
+			}
+			if(keys[controls[i].up] && player[i].attacking === false && !player[i].shield){
+				player[i].yVel -= 7;
+			}
+		}
+		if(player[i].y > -20 && player[i].y < 215){
+			if(player[i].x > -255 && player[i].x < -230){
+				player[i].xVel = -1;
+			}
+			if(player[i].x < 255 && player[i].x > 230){
+				player[i].xVel = 1;
+			}
+		}
+		if(player[i].y > 170 && player[i].x > -250 && player[i].x < 250 && player[i].y < 225){
+			player[i].yVel = 5;
+		}*/
+		/*if(!(player[i].x > this.x-25 && player[i].x < this.x+this.width+25 && player[i].y > this.y-30 && player[i].y < this.y + this.height + 25)){
+			if(player[i].jump && keys[controls[i].up] && player[i].yVel > -2 && player[i].attacking === false && !player[i].shield){
+				player[i].yVel = -7;
+				player[i].jump = false;
+			}
+		}*/
+		if(player[i].x > this.x-25 && player[i].x < this.x+this.width+25 && player[i].y > this.y-30 && player[i].y < this.y + this.height){
+			arena.check.push(1);
+			player[i].airSpecial = true;
+			player[i].yVel = -0.7;
+			if(/*player[i].y + player[i].yVel <= -30 || */player[i].y < this.y - 28){
+				player[i].yVel = 0;
+			}
+			if(cpuControls[i].up && player[i].attacking === false && !player[i].shield){
+				player[i].yVel -= 7;
+			}
+		}
+		if(player[i].y > this.y-20 && player[i].y < this.y + this.height){
+			if(player[i].x > this.x-30 && player[i].x < this.x+5){
+				player[i].xVel = -1.5;
+			}
+			if(player[i].x < this.x+this.width+30 && player[i].x > this.x+this.width+5){
+				player[i].xVel = 1.5;
+			}
+		}
+		if(player[i].y > this.y+this.height-30 && player[i].x > this.x-25 && player[i].x < this.x+this.width+25 && player[i].y < this.y+this.height+30){
+			player[i].yVel = 5;
+		}
+	}
+	
+	this.draw = function() {
+		fill(0);
+		rect(this.x, this.y, this.width, this.height);
+	}
+}
+function Arena(name) {
+	this.name = name;
+	
+	this.blocks = [];
+	
+	this.check = [];
+	
+	this.formArena = function() {
+		if(this.name === "Classic") {//Arena spots
+			this.music = Music.theme;
+			this.spawn = [
+				new Spawn(-225, -30),
+				new Spawn(-82, -30),
+				new Spawn(82, -30),
+				new Spawn(225, -30)
+			];
+			this.bounds = [-260, 260];
+			this.blocks = [
+				new Block(-250, 0, 500, 200)
+			];
+		}
+		if(this.name === "Arena") {
+			this.music = Music.theme;
+			this.spawn = [
+				new Spawn(-170, -5),
+				new Spawn(-52, -5),
+				new Spawn(52, -5),
+				new Spawn(170, -5)
+			];
+			this.bounds = [-260, 260];
+			this.blocks = [
+				new Block(-250, 50, 500, 50),
+				new Block(-250, -200, 50, 300),
+				new Block(200, -200, 50, 300)
+			];
+		}
+		if(this.name === "Castle") {
+			this.music = Music.theme;
+			this.spawn = [
+				new Spawn(-290, -25),
+				new Spawn(-100, -25),
+				new Spawn(100, -25),
+				new Spawn(290, -25)
+			];
+			this.bounds = [-500, 500];
+			this.blocks = [
+				new Block(-300, 0, 150, 80),
+				new Block(150, 0, 150, 80),
+				new Block(50, 130, 50, 50),
+				new Block(-100, 130, 50, 50),
+				new Block(-500, 200, 200, 50),
+				new Block(300, 200, 200, 50),
+				new Block(-100, -150, 200, 50)
+			];
+		}
+		Music.main = this.music;
+	}
+	
+	this.collide = function(i) {
+		this.check = [];
+		for(var o = 0;o < this.blocks.length;o ++) {
+			this.blocks[o].draw();
+			this.blocks[o].collide(i);
+		}
+		if(this.check.length < 1) {
+			player[i].ground = false;
+			if(player[i].jump && keys[controls[i].up] && player[i].yVel > -2 && player[i].attacking === false && !player[i].shield){
+				player[i].yVel = -7;
+				player[i].jump = false;
+			}
+		} else {
+			player[i].ground = true;
+			player[i].jump = true;
+		}
+	}
+	
+	this.collideCPU = function(i) {
+		this.check = [];
+		for(var o = 0;o < this.blocks.length;o ++) {
+			this.blocks[o].draw();
+			this.blocks[o].collideCPU(i);
+		}
+		if(this.check.length < 1) {
+			player[i].ground = false;
+			if(player[i].jump && cpuControls[i].up && player[i].yVel > -2 && player[i].attacking === false && !player[i].shield){
+				player[i].yVel = -7;
+				player[i].jump = false;
+			}
+		} else {
+			player[i].ground = true;
+			player[i].jump = true;
+		}
+	}
+}
+function playAttack(u, i) {
+	if(attack[u].player === i) {
+		if(attack[u].type === "gun"){
+			if(attack[u].dir === 1){
+				attack[u].x += 20;
+			}
+			if(attack[u].dir === 2){
+				attack[u].x -= 20;
+			}
+		}
+		
+		if(attack[u].type === "zoom"){
+			if(attack[u].dir === 1){
+				player[i].xVel += 1;
+				attack[u].x = player[i].x + 15;
+				attack[u].y = player[i].y;
+			}
+			if(attack[u].dir === 2){
+				player[i].xVel -= 1;
+				attack[u].x = player[i].x - 55;
+				attack[u].y = player[i].y;
+			}
+		}
+
+		if(attack[u].type === "high bone"){
+			if(attack[u].dir === 1){
+				attack[u].x += 12;
+				attack[u].y += 8;
+			}
+			if(attack[u].dir === 2){
+				attack[u].x -= 12;
+				attack[u].y += 8;
+			}
+		}
+		
+		if(attack[u].type === "bow") {
+			fill(255, 255, 0, 70);
+			for(var p = 0;p < player[i].character.charge;p ++) {
+				ellipse(player[i].x, player[i].y, 5*player[i].character.charge-5*p, 5*player[i].character.charge-5*p);
+			}
+			if(player[i].cpu) {
+				if(attack[u].dir === 1) {
+					if(cpuControls[i].special && attack[u].w === 0) {
+						attack[u].damage = player[i].character.charge;
+						attack[u].x = player[i].x + 15;
+						attack[u].y = player[i].y;
+						attack[u].time = 100;
+						attack[u].w = 0;
+						attack[u].h = 0;
+						if(frameCount % 3 === 0 && player[i].character.charge < 10) {
+							player[i].character.charge ++;
+						}
+					} else {
+						attack[u].y += 1.5/player[i].character.charge * 80/attack[u].time;
+						attack[u].x += player[i].character.charge*2;
+						attack[u].w = 30;
+						attack[u].h = 10;
+					}
+				}
+				if(attack[u].dir === 2) {
+					if(cpuControls[i].special && attack[u].w === 0) {
+						attack[u].damage = player[i].character.charge;
+						attack[u].x = player[i].x - 45;
+						attack[u].y = player[i].y;
+						attack[u].time = 100;
+						attack[u].w = 0;
+						attack[u].h = 0;
+						if(frameCount % 3 === 0 && player[i].character.charge < 10) {
+							player[i].character.charge ++;
+						}
+					} else {
+						attack[u].y += 1.5/player[i].character.charge * 80/attack[u].time;
+						attack[u].x -= player[i].character.charge*2;
+						attack[u].w = 30;
+						attack[u].h = 10;
+					}
+				}
+			} else {
+				if(attack[u].dir === 1) {
+					if(keys[controls[i].special] && attack[u].w === 0) {
+						attack[u].damage = player[i].character.charge;
+						attack[u].x = player[i].x + 15;
+						attack[u].y = player[i].y;
+						attack[u].time = 100;
+						attack[u].w = 0;
+						attack[u].h = 0;
+						if(frameCount % 3 === 0 && player[i].character.charge < 10) {
+							player[i].character.charge ++;
+						}
+					} else {
+						attack[u].y += 1.5/player[i].character.charge * 80/attack[u].time;
+						attack[u].x += player[i].character.charge*2;
+						attack[u].w = 30;
+						attack[u].h = 10;
+					}
+				}
+				if(attack[u].dir === 2) {
+					if(keys[controls[i].special] && attack[u].w === 0) {
+						attack[u].damage = player[i].character.charge;
+						attack[u].x = player[i].x - 45;
+						attack[u].y = player[i].y;
+						attack[u].time = 100;
+						attack[u].w = 0;
+						attack[u].h = 0;
+						if(frameCount % 3 === 0 && player[i].character.charge < 10) {
+							player[i].character.charge ++;
+						}
+					} else {
+						attack[u].y += 1.5/player[i].character.charge * 80/attack[u].time;
+						attack[u].x -= player[i].character.charge*2;
+						attack[u].w = 30;
+						attack[u].h = 10;
+					}
+				}
+			}
+		}//link
+		
+		if(attack[u].type === "sword up jump") {
+			attack[u].x = player[i].x - 5;
+			attack[u].y = player[i].y - 60;
+			player[i].yVel = -9;
+			player[i].airSpecial = false;
+		}//link
+
+		if(attack[u].type === "gun up"){
+			attack[u].y -= 20;
+		}
+
+		if(attack[u].type === "gun down"){
+			attack[u].y += 20;
+		}
+
+		if(attack[u].type === "glitch") {
+			attack[u].x = player[i].x + random(-25, 5);
+			attack[u].y = player[i].y + random(-30, 10);
+		}
+
+		if(attack[u].type === "glitch special") {
+			attack[u].x = player[i].x + random(-30, -5);
+			attack[u].y = player[i].y + random(-30, -5);
+			player[i].yVel -= 3;
+			player[i].airSpecial = false;
+		}
+
+		if(attack[u].type === "nemesis"){
+			attack[u].y -= 28;
+		}
+
+		if(attack[u].type === "jump") {
+			attack[u].x = player[i].x - 25;
+			attack[u].y = player[i].y - 30;
+			player[i].yVel = -8;
+			player[i].airSpecial = false;
+		}
+		
+		if(attack[u].type === "sword right") {//link
+			attack[u].x = player[i].x + 15;
+			attack[u].y = player[i].y;
+		}
+		
+		if(attack[u].type === "sword left") {//link
+			attack[u].x = player[i].x - 55;
+			attack[u].y = player[i].y;
+		}
+		
+		if(attack[u].type === "sword up") {//link
+			attack[u].x = player[i].x - 5;
+			attack[u].y = player[i].y - 70;
+		}
+		
+		if(attack[u].type === "sword down") {//link
+			attack[u].x = player[i].x - 5;
+			attack[u].y = player[i].y + 30;
+		}
+
+		if(attack[u].type === "jump sans") {
+			attack[u].x = player[i].x - 15;
+			attack[u].y = player[i].y - 15;
+			player[i].yVel = -8;
+			player[i].airSpecial = false;
+		}
+
+		if(attack[u].type === "booster") {
+			attack[u].x = player[i].x - 10;
+			attack[u].y = player[i].y + 30;
+			player[i].yVel = -8;
+			player[i].airSpecial = false;
+		}
+
+		if(attack[u].type === "bones") {
+			attack[u].y -= 8;
+			attack[u].h += 8;
+			attack[u].damage ++;
+			player[i].airSpecial = false;
+		}
+	}
+}
+function Controls(up, left, down, right, attack, special, shield, pause) {
+	this.up = up;
+	this.left = left;
+	this.down = down;
+	this.right = right;
+	this.attack = attack;
+	this.special = special;
+	this.shield = shield;
+	this.pause = pause;
+}
+//Animations
+/*var quote;
+var flowey;
+var glitch;
+var sans;
+var ballos;
+var fawful;
+var link;*/
+//Animations
+//Animation images
+var toad0;
+var toad1;
+var toad2;
+var toad3;
+var toad4;
+var toad5;
+var toad6;
+var toad7;
+var toad8;
+var toad9;
+var toad10;
+var toad11;
+var toad12;
+var toad13;
+var toad14;
+var toad15;
+
+var link0;
+var link1
+var link2;
+var link3;
+
+var quote0;
+var quote1;
+var quote3;
+var quote4;
+var quote5;
+var quote7;
+
+var sans0;
+var sans1;
+var sans2;
+var sans3;
+
+var fawful0;
+var fawful1;
+var fawful2;
+var fawful3;
+var fawful4;
+var fawful5;
+var fawful6;
+var fawful7;
+
+var glitch1;
+var glitch2;
+var glitch3;
+//Animation images
+var playersDown = 0;//Finds the amount of players not in the match
+var winner;//Who won the last match
+var winnerCount = 0;
+var trans = {x: 0, y: 0, scale: 1, count: 0};
+var playerNum = 1;
+var keySelect = [false,0];
+var menu = 3;//0: main menu, 1: settings, 2: character select, 3: intro, 4: actual battle
+var arena = new Arena("Arena");//what arena you are in
+var keys = [];
+var fire = [];
+
+var title;//images
+var quotePic;
+var floweyPic;
+var glitchPic;
+var sansPic;
+var balosPic;
+var linkPic;
+var fawfulPic;
+var toadPic;
+var randomPic;//images
+
+var allPlayerStock = 3;//How much stock each player gets
+var ai = new AI();
+var slideX = [0,0];
+var slideY = [0,0];
+var loading = 0;
+var picCount = 0;
+var pause = false;
+var choose = {
+  place: true,
+  p: [
+		{
+			x: 120,
+			y: 380,
+			follow: false
+		},
+		{
+			x: 340,
+			y: 380,
+			follow: false
+		},
+		{
+			x: 560,
+			y: 380,
+			follow: false
+		},
+		{
+			x: 780,
+			y: 380,
+			follow: false
+		}
+	]
+}
+var controls = [
+	new Controls(38, 37, 40, 39, 190, 188, 77, 32),
+	new Controls(87, 65, 83, 68, 70, 71, 72, 32),
+	new Controls(254, 254, 254, 254, 254, 254, 254, 254),
+	new Controls(254, 254, 254, 254, 254, 254, 254, 254),
+];
+var cpuControls = [
+	new Controls(false, false, false, false, false, false, false, false),
+	new Controls(false, false, false, false, false, false, false, false),
+	new Controls(false, false, false, false, false, false, false, false),
+	new Controls(false, false, false, false, false, false, false, false)
+];
+function keyButton(x,y,inp){
+  fill(70,70,70);//one button
+  rect(x,y,100,100,10);
+  fill(0,0,0);
+  rect(x + 10,y + 10,80,80,10);//one button
+  fill(255,255,255);
+  textSize(18);
+  text(keyCodes[inp],x + 50,y + 50);
+}
+function backButton(){
+  textSize(45);
+  fill(255,90,90);
+  rect(800,0,100,100);
+  fill(0,0,0);
+  text("Back",850,50);
+  if(mouseX > 800 && mouseY < 100 && mouseIsPressed){
+    menu = 0;
+    fire = [];
+  }
+}
+function arenaBackButton(){
+  textSize(45);
+  fill(255,90,90);
+  rect(0,0,100,100);
+  fill(0,0,0);
+  text("Back",50,50);
+  if(mouseX < 100 && mouseY < 100 && mouseIsPressed){
+    menu = 2;
+  }
+}
+var attack = [
+  {
+    x: 0,
+    y: 0,
+    w: 0,
+    h: 0,
+    time: 0,
+    player: 0,
+    damage: 0,
+    launch: 0
+  }
+];
+var player = [
+	new Player(0, 0, false, 0, 0, 0, 0, 1, false, 0, true, true, new Color(220, 130, 130), new Character(undefined)),
+	new Player(0, 0, true, 0, 0, 0, 0, 1, false, 0, true, true, new Color(130, 130, 220), new Character(undefined)),
+	new Player(0, 0, true, 0, 0, 0, 0, 1, false, 0, true, true, new Color(130, 220, 130), new Character(undefined)),
+	new Player(0, 0, true, 0, 0, 0, 0, 1, false, 0, true, true, new Color(220, 130, 220), new Character(undefined))
+];
+var addPic = true;
+var pictures = 53;
+var loadCounter = 0;
+function loaded() {
+	loadCounter ++;
+	loading = floor(loadCounter/pictures * 100);
+}
+
+function setArena(i) {
+	switch(i) {
+		case 0:
+			return "Classic";
+		case 1:
+			return "Arena";
+		case 2:
+			return "Castle";
+		default:
+			return "Classic";
+	}
+}
+
+var hacked = false;
+function hackLink() {
+	hacked = true;
+	console.log("Link is now invinsible >:)");
+}
+function Animation(dir, runFrame, fpr, right, up, left, down) {//w.i.p.
+	this.dir = dir;
+	this.runFrame = runFrame;
+	this.fpr = fpr;
+	this.right = right;
+	this.up = up;
+	this.left = left;
+	this.down = down;
+	
+	this.reset = function() {
+		this.runFrame = 0;
+	}
+	
+	this.draw = function(x, y, width, height) {
+		if(this.dir == 3) {
+			for(var i = 0;i < this.down.length;i ++) {
+				if(this.runFrame % this.fpr < this.fpr/this.down.length*(i+1) && this.runFrame % this.fpr >= this.fpr/this.down.length*i) {
+					image(down[i], x, y, width, height);
+				}
+			}
+		} else {
+			if(this.dir == 1) {
+				for(var i = 0;i < this.up.length;i ++) {
+					if(this.runFrame % this.fpr < this.fpr/this.up.length*(i+1) && this.runFrame % this.fpr >= this.fpr/this.up.length*i) {
+						image(up[i], x, y, width, height);
+					}
+				}
+			} else {
+				if(this.dir == 0) {
+					for(var i = 0;i < this.right.length;i ++) {
+						if(this.runFrame % this.fpr < this.fpr/this.right.length*(i+1) && this.runFrame % this.fpr >= this.fpr/this.right.length*i) {
+							image(right[i], x, y, width, height);
+						}
+					}
+				}else {
+					if(this.dir == 2) {
+						for(var i = 0;i < this.left.length;i ++) {
+							if(this.runFrame % this.fpr < this.fpr/this.left.length*(i+1) && this.runFrame % this.fpr >= this.fpr/this.left.length*i) {
+								image(left[i], x, y, width, height);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	this.move = function(dir) {
+		this.runFrame ++;
+		this.dir = dir;
+	}
+}
+function Character(pic) {
+	this.pic = pic;
+	
+	this.charge = 0;
+	
+	if(this.pic === randomPic) {
+		this.random = Math.ceil(Math.random()*8);
+		
+		if(this.random === 1) {
+			this.pic = quotePic;
+		}
+		
+		if(this.random === 2) {
+			this.pic = fawfulPic;
+		}
+		
+		if(this.random === 3) {
+			this.pic = sansPic;
+		}
+		
+		if(this.random === 4) {
+			this.pic = floweyPic;
+		}
+		
+		if(this.random === 5) {
+			this.pic = glitchPic;
+		}
+		
+		if(this.random === 6) {
+			this.pic = balosPic;
+		}
+		
+		if(this.random === 7) {
+			this.pic = linkPic;
+		}
+		
+		if(this.random === 8) {
+			this.pic = toadPic;
+		}
+	}
+	
+	if(true) {
+		this.range = 100;
+		
+		if(this.pic === quotePic) {
+			this.range = 250;
+		}
+		
+		if(this.pic === fawfulPic) {
+			this.range = 230;
+		}
+		
+		if(this.pic === sansPic) {
+			this.range = 160;
+		}
+		
+		if(this.pic === balosPic) {
+			this.range = 80;
+		}
+		
+		if(this.pic === glitchPic) {
+			this.range = 40;
+		}
+		
+		if(this.pic === linkPic) {
+			this.range = 80;
+		}
+	}//Range
+	
+	if(true) {
+		this.animation = new Animation(0, 0, 36, [], [], [], []);//default
+
+		if(this.pic === quotePic) {
+			this.animation = new Animation(0, 0, 36, [quote4, quote5, quote4, quote7], [], [quote0, quote1, quote0, quote3], []);
+		}
+		
+		if(this.pic === linkPic) {
+			this.animation = new Animation(0, 0, 18, [link2, link3], [], [link0, link1], []);
+		}
+
+		if(this.pic === floweyPic) {
+			this.animation = new Animation(0, 0, 36, [floweyPic], [], [floweyPic], []);
+		}
+
+		if(this.pic === glitchPic) {
+			this.animation = new Animation(0, 0, 8, [glitchPic, glitch1, glitch2, glitch3], [], [glitchPic, glitch3, glitch1, glitch2], []);
+		}
+
+		if(this.pic === sansPic) {
+			this.animation = new Animation(0, 0, 12, [sans0, sans1], [], [sans2, sans3], []);
+		}
+
+		if(this.pic === balosPic) {
+			this.animation = new Animation(0, 0, 36, [balosPic], [], [balosPic], []);
+		}
+
+		if(this.pic === fawfulPic) {
+			this.animation = new Animation(0, 0, 36, [fawful0, fawful1, fawful2, fawful3], [], [fawful4, fawful5, fawful6, fawful7], []);
+		}
+		
+		if(this.pic === toadPic) {
+			this.animation = new Animation(0, 0, 36, [toad0, toad1, toad2, toad3, toad4, toad5, toad6, toad7], [], [toad8, toad9, toad10, toad11, toad12, toad13, toad14, toad15], []);
+		}
+	}//animations
+	
+	if(true) {
+		this.launch = 1;
+		if(this.pic === sansPic) {
+			this.launch = 1.2;
+		}
+		if(this.pic === balosPic) {
+			this.launch = 1.2;
+		}
+		if(this.pic === fawfulPic) {
+			this.launch = 0.9;
+		}
+		if(this.pic === floweyPic) {
+			this.launch = 1.4;
+		}
+		if(this.pic === toadPic) {
+			this.launch = 0.5;
+		}
+	}//Vulnerability
+	
+	if(true) {
+		this.inv = 50;
+		if(this.pic === sansPic) {
+			this.inv = 1;
+		}
+		if(this.pic === balosPic) {
+			this.inv = 45;
+		}
+		if(this.pic === floweyPic) {
+			this.inv = 15;
+		}
+		if(this.pic === linkPic) {
+			this.inv = 20;
+		}
+		if(this.pic === glitchPic) {
+			this.inv = 200;
+		}
+		if(this.pic === quotePic) {
+			this.inv = 30;
+		}
+		if(this.pic === toadPic) {
+			this.inv = 60;
+		}
+	}//Invinsibility
+	
+	if(true){
+		this.attack = function(index) {
+			if(player[index].dir === 1){
+				player[index].attacking = true;
+				attack.push({
+					x: player[index].x + 25,
+					y: player[index].y - 20,
+					w: 50,
+					h: 50,
+					time: 100,
+					player: index,
+					damage: 5,
+					launch: 0.3,
+					type: "default",
+					dir: 1
+				});
+			}
+			if(player[index].dir === 2){
+				player[index].attacking = true;
+				attack.push({
+					x: player[index].x - 75,
+					y: player[index].y - 20,
+					w: 50,
+					h: 50,
+					time: 100,
+					player: index,
+					damage: 5,
+					launch: 0.3,
+					type: "default",
+					dir: 2
+				});
+			}
+		}//default
+		
+		if(this.pic === toadPic) {
+			this.attack = function(index) {
+				if(player[index].dir === 1){
+					player[index].attacking = true;
+					attack.push({
+						x: player[index].x + 15,//x
+						y: player[index].y - 10,//y
+						w: 30,//w
+						h: 20,//h
+						time: 20,//time
+						player: index,//player
+						damage: 6,//damage
+						launch: 0.2,//launch
+						type: "default",//type
+						dir: 1//dir
+					});
+				}
+				if(player[index].dir === 2){
+					player[index].attacking = true;
+					attack.push({
+						x: player[index].x - 45,
+						y: player[index].y - 10,
+						w: 30,
+						h: 20,
+						time: 20,
+						player: index,
+						damage: 6,
+						launch: 0.2,
+						type: "default",
+						dir: 2
+					});
+				}
+			}//default
+		}
+		
+		if(this.pic === linkPic) {
+			this.attack = function(index) {
+				if(player[index].look === 1) {
+					player[index].attacking = true;
+					attack.push({
+						x: player[index].x - 5,
+						y: player[index].y - 70,
+						w: 15,
+						h: 40,
+						time: 5,
+						player: index,
+						damage: 2,
+						launch: 0.4,
+						type: "sword up",
+						dir: 1
+					});
+				} else {
+					if(player[index].look === 2) {
+						player[index].attacking = true;
+						attack.push({
+							x: player[index].x - 5,
+							y: player[index].y + 30,
+							w: 15,
+							h: 40,
+							time: 5,
+							player: index,
+							damage: 3,
+							launch: 0.2,
+							type: "sword down",
+							dir: 1
+						});
+					} else {
+						if(player[index].dir === 1){
+							player[index].attacking = true;
+							attack.push({
+								x: player[index].x + 15,
+								y: player[index].y,
+								w: 40,
+								h: 15,
+								time: 5,
+								player: index,
+								damage: 4,
+								launch: 0.1,
+								type: "sword right",
+								dir: 1
+							});
+						}
+						if(player[index].dir === 2){
+							player[index].attacking = true;
+							attack.push({
+								x: player[index].x - 55,
+								y: player[index].y,
+								w: 40,
+								h: 15,
+								time: 5,
+								player: index,
+								damage: 4,
+								launch: 0.1,
+								type: "sword left",
+								dir: 2
+							});
+						}
+					}
+				}
+			}
+		}//link
+		
+		if(this.pic === sansPic) {
+			this.attack = function(index) {
+				if(player[index].dir === 1){
+					player[index].attacking = true;
+					attack.push({
+						x: player[index].x - 5,
+						y: player[index].y - 50,
+						w: 10,
+						h: 10,
+						time: 40,
+						player: index,
+						damage: 1,
+						launch: 0.3,
+						type: "high bone",
+						dir: 1
+					});
+				}
+				if(player[index].dir === 2){
+					player[index].attacking = true;
+					attack.push({
+						x: player[index].x - 5,
+						y: player[index].y - 50,
+						w: 10,
+						h: 10,
+						time: 40,
+						player: index,
+						damage: 1,
+						launch: 0.3,
+						type: "high bone",
+						dir: 2
+					});
+				}
+			}
+		}//sans
+		
+		if(this.pic === quotePic) {
+			this.attack = function(index) {
+				if(player[index].look === 1) {
+					player[index].attacking = true;
+					attack.push({
+						x: player[index].x - 12,
+						y: player[index].y - 20,
+						w: 25,
+						h: 30,
+						time: 40,
+						player: index,
+						damage: 4,
+						launch: 0.2,
+						type: "gun up",
+						dir: 2
+					});
+				} else {
+					if(player[index].look === 2) {
+						player[index].attacking = true;
+						attack.push({
+							x: player[index].x - 12,
+							y: player[index].y + 20,
+							w: 25,
+							h: 30,
+							time: 40,
+							player: index,
+							damage: 4,
+							launch: 0.2,
+							type: "gun down",
+							dir: 2
+						});
+					} else {
+						if(player[index].dir === 2){
+							player[index].attacking = true;
+							attack.push({
+								x: player[index].x - 40,
+								y: player[index].y - 10,
+								w: 30,
+								h: 25,
+								time: 40,
+								player: index,
+								damage: 4,
+								launch: 0.2,
+								type: "gun",
+								dir: 2
+							});
+						}
+						if(player[index].dir === 1){
+							player[index].attacking = true;
+							attack.push({
+								x: player[index].x + 10,
+								y: player[index].y - 10,
+								w: 30,
+								h: 25,
+								time: 40,
+								player: index,
+								damage: 4,
+								launch: 0.2,
+								type: "gun",
+								dir: 1
+							});
+						}
+					}
+				}
+			}
+		}//quote
+
+		if(this.pic === balosPic) {
+			this.attack = function(index) {
+				if(player[index].look === 1) {
+					player[index].attacking = true;
+					attack.push({
+						x: player[index].x - 12,
+						y: player[index].y - 60,
+						w: 25,
+						h: 25,
+						time: 20,
+						player: index,
+						damage: 5,
+						launch: 0.1,
+						type: "circle",
+						dir: 1
+					});
+				} else {
+					if(player[index].dir === 1){
+						player[index].attacking = true;
+						attack.push({
+							x: player[index].x + 35,
+							y: player[index].y - 10,
+							w: 25,
+							h: 25,
+							time: 20,
+							player: index,
+							damage: 3,
+							launch: 0.6,
+							type: "circle",
+							dir: 1
+						});
+					}
+					if(player[index].dir === 2){
+						player[index].attacking = true;
+						attack.push({
+							x: player[index].x - 60,
+							y: player[index].y - 10,
+							w: 25,
+							h: 25,
+							time: 20,
+							player: index,
+							damage: 3,
+							launch: 0.6,
+							type: "circle",
+							dir: 2
+						});
+					}
+				}
+			}
+		}//ballos
+
+		if(this.pic === fawfulPic) {
+			this.attack = function(index) {
+				if(player[index].look === 1) {
+					player[index].attacking = true;
+					attack.push({
+						x: player[index].x - 5,
+						y: player[index].y - 5,
+						w: 10,
+						h: 10,
+						time: 35,
+						player: index,
+						damage: 6,
+						launch: 0.1,
+						type: "gun up",
+						dir: 1
+					});
+				} else {
+					if(player[index].look === 2) {
+						player[index].attacking = true;
+						attack.push({
+							x: player[index].x - 5,
+							y: player[index].y - 5,
+							w: 10,
+							h: 10,
+							time: 35,
+							player: index,
+							damage: 6,
+							launch: 0.1,
+							type: "gun down",
+							dir: 1
+						});
+					} else {
+						if(player[index].dir === 1){
+							player[index].attacking = true;
+							attack.push({
+								x: player[index].x + 15,
+								y: player[index].y - 5,
+								w: 10,
+								h: 10,
+								time: 35,
+								player: index,
+								damage: 6,
+								launch: 0.1,
+								type: "gun",
+								dir: 1
+							});
+						}
+						if(player[index].dir === 2){
+							player[index].attacking = true;
+							attack.push({
+								x: player[index].x - 25,
+								y: player[index].y - 5,
+								w: 10,
+								h: 10,
+								time: 35,
+								player: index,
+								damage: 6,
+								launch: 0.1,
+								type: "gun",
+								dir: 2
+							});
+						}
+					}
+				}
+			}
+		}//fawful
+		
+		if(this.pic === glitchPic) {
+			this.attack = function(index) {
+				if(player[index].dir === 1){
+					player[index].attacking = true;
+					attack.push({
+						x: player[index].x - 10,
+						y: player[index].y - 10,
+						w: 20,
+						h: 20,
+						time: 200,
+						player: index,
+						damage: 11,
+						launch: 0.6,
+						type: "glitch",
+						dir: 1
+					});
+				}
+				if(player[index].dir === 2){
+					player[index].attacking = true;
+					attack.push({
+						x: player[index].x - 10,
+						y: player[index].y - 10,
+						w: 20,
+						h: 20,
+						time: 200,
+						player: index,
+						damage: 11,
+						launch: 0.6,
+						type: "glitch",
+						dir: 2
+					});
+				}
+			}
+		}//sans
+	}//attacks
+	
+	if(true){
+		this.special = function(index) {
+			if(player[index].look === 1 && player[index].airSpecial) {
+				player[index].attacking = true;
+				attack.push({
+					x: player[index].x - 25,
+					y: player[index].y - 30,
+					w: 50,
+					h: 60,
+					time: 40,
+					player: index,
+					damage: 1,
+					launch: 0.4,
+					type: "jump",
+					dir: 1
+				});
+			}
+		}
+		
+		if(this.pic === sansPic) {
+			this.special = function(index) {
+				if(player[index].airSpecial) {
+					if(player[index].look === 1) {
+						player[index].attacking = true;
+						attack.push({
+							x: player[index].x - 15,
+							y: player[index].y - 15,
+							w: 30,
+							h: 30,
+							time: 50,
+							player: index,
+							damage: 2,
+							launch: 0.3,
+							type: "jump sans",
+							dir: 1
+						});
+					} else {
+						if(player[index].look === 2) {
+							player[index].attacking = true;
+							attack.push({
+								x: player[index].x - 40,
+								y: player[index].y + 30,
+								w: 80,
+								h: 0,
+								time: 30,
+								player: index,
+								damage: 2,
+								launch: 0.5,
+								type: "bones",
+								dir: 1
+							});
+						}
+					}
+				}
+			}
+		}
+		
+		if(this.pic === quotePic) {
+			this.special = function(index) {
+				if(player[index].airSpecial) {
+					if(player[index].look === 1) {
+						player[index].attacking = true;
+						attack.push({
+							x: player[index].x - 10,
+							y: player[index].y + 30,
+							w: 20,
+							h: 30,
+							time: 70,
+							player: index,
+							damage: 0,
+							launch: 0.1,
+							type: "booster",
+							dir: 1
+						});
+					} else {
+						if(player[index].look === 2) {
+							player[index].attacking = true;
+							attack.push({
+								x: player[index].x - 7,
+								y: player[index].y - 20,
+								w: 15,
+								h: 20,
+								time: 60,
+								player: index,
+								damage: 12,
+								launch: 0.1,
+								type: "nemesis",
+								dir: 1
+							});
+						} else {
+							if(player[index].dir === 2){
+								player[index].attacking = true;
+								attack.push({
+									x: player[index].x - 45,
+									y: player[index].y,
+									w: 30,
+									h: 10,
+									time: 30,
+									player: index,
+									damage: 1,
+									launch: 0.6,
+									type: "gun",
+									dir: 2
+								});
+							}
+							if(player[index].dir === 1){
+								player[index].attacking = true;
+								attack.push({
+									x: player[index].x + 15,
+									y: player[index].y,
+									w: 30,
+									h: 10,
+									time: 30,
+									player: index,
+									damage: 1,
+									launch: 0.6,
+									type: "gun",
+									dir: 1
+								});
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		if(this.pic === glitchPic) {
+			this.special = function(index) {
+				if(player[index].look === 1 && player[index].airSpecial) {
+					player[index].attacking = true;
+					attack.push({
+						x: player[index].x - 15,
+						y: player[index].y - 15,
+						w: 30,
+						h: 30,
+						time: 10,
+						player: index,
+						damage: 2,
+						launch: 1.3,
+						type: "glitch special",
+						dir: 1
+					});
+				}
+			}
+		}
+		
+		if(this.pic === linkPic) {
+			this.special = function(index) {
+				if(player[index].airSpecial) {
+					if(player[index].look === 1) {
+						player[index].attacking = true;
+						attack.push({
+							x: player[index].x - 5,
+							y: player[index].y - 70,
+							w: 15,
+							h: 40,
+							time: 35,
+							player: index,
+							damage: 1,
+							launch: 0.6,
+							type: "sword up jump",
+							dir: 1
+						});
+					} else {
+						if(player[index].look === 2) {
+							if(player[index].dir === 2){
+								player[index].attacking = true;
+								attack.push({
+									x: player[index].x - 55,
+									y: player[index].y,
+									w: 40,
+									h: 15,
+									time: 45,
+									player: index,
+									damage: 4,
+									launch: 0.1,
+									type: "zoom",
+									dir: 2
+								});
+							}
+							if(player[index].dir === 1){
+								player[index].attacking = true;
+								attack.push({
+									x: player[index].x + 15,
+									y: player[index].y,
+									w: 40,
+									h: 15,
+									time: 45,
+									player: index,
+									damage: 4,
+									launch: 0.1,
+									type: "zoom",
+									dir: 1
+								});
+							}
+						} else {
+							if(player[index].dir === 2){
+								this.charge = 0;
+								player[index].attacking = true;
+								attack.push({
+									x: player[index].x - 45,
+									y: player[index].y,
+									w: 0,
+									h: 10,
+									time: 200,
+									player: index,
+									damage: 1,
+									launch: 0.1,
+									type: "bow",
+									dir: 2
+								});
+							}
+							if(player[index].dir === 1){
+								this.charge = 0;
+								player[index].attacking = true;
+								attack.push({
+									x: player[index].x + 15,
+									y: player[index].y,
+									w: 0,
+									h: 10,
+									time: 200,
+									player: index,
+									damage: 1,
+									launch: 0.1,
+									type: "bow",
+									dir: 1
+								});
+							}
+						}
+					}
+				}
+			}
+		}
+	}//special attacks
+}
+function Player(x, y, cpu, damage, xVel, yVel, look, dir, attacking, inv, alive, airSpecial, team, character) {
+	this.x = x;//x value
+  this.y = y;//y value
+	this.shield = false;//If your shield is out
+	this.ground = false;
+	this.shieldNum = 200;//How much shield you have left
+  this.cpu = cpu;//If you are a cpu
+  this.damage = damage;//How much damage you have taken
+  this.xVel = xVel;//x velocity
+  this.yVel = yVel;//y velocity
+  this.look = look;//0: neither 1: up 2: down
+  this.dir = dir;//1: right 2: left
+  this.attacking = attacking;//If you are attacking
+  this.inv = inv;//How much invinsibility you have
+	this.lives = allPlayerStock;//How many lives you have
+	this.alive = alive;//If you are alive
+	this.airSpecial = airSpecial;//Stops you from using special attack twice in the air
+	this.team = team;//Should be a color for what team you are on
+  this.character = character;//The character object
+	this.difficulty = 9;//1-9 How hard cpus are
+	
+	this.resetLives = function() {
+		this.lives = allPlayerStock;
+	}
+	
+	this.reset = function() {
+		this.x = 0;//x value
+		this.y = 0;//y value
+		this.shield = false;//If your shield is out
+		this.ground = false;
+		this.shieldNum = 200;//How much shield you have left
+		this.damage = 0;//How much damage you have taken
+		this.xVel = 0;//x velocity
+		this.yVel = 0;//y velocity
+		this.look = 0;//0: neither 1: up 2: down
+		this.dir = 1;//1: right 2: left
+		this.attacking = false;//If you are attacking
+		this.inv = 0;//How much invinsibility you have
+		this.lives = allPlayerStock;//How many lives you have
+		this.alive = true;//If you are alive
+		this.character = new Character(undefined);
+		this.airSpecial = false;//Stops you from using special attack twice in the air
+	}
+	
+	this.name = function() {
+		if(this.character.pic === quotePic) {
+			return "Quote";
+		}
+		if(this.character.pic === fawfulPic) {
+			return "Fawful";
+		}
+		if(this.character.pic === balosPic) {
+			return "Ballos";
+		}
+		if(this.character.pic === floweyPic) {
+			return "Flowey";
+		}
+		if(this.character.pic === glitchPic) {
+			return "Glitch";
+		}
+		if(this.character.pic === sansPic) {
+			return "Sans";
+		}
+		if(this.character.pic === linkPic) {
+			return "Link";
+		}
+		if(this.character.pic === toadPic) {
+			return "Toad";
+		}
+	}
+}
+var keyCodes = [
+  "",//0
+  "",//1
+  "",//2
+  "break",//3
+  "",//4
+  "",//5
+  "",//6
+  "",//7
+  "backspace",//8
+  "tab",//9
+  "",//10
+  "",//11
+  "clear",//12
+  "enter",//13
+  "",//14
+  "",//15
+  "shift",//16
+  "ctrl",//17
+  "alt",//18
+  "pause/break",//19
+  "caps\nlock",//20
+  "",//21
+  "",//22
+  "",//23
+  "",//24
+  "",//25
+  "",//26
+  "escape",//27
+  "conversion",//28
+  "non-conversion",//29
+  "",//30
+  "",//31
+  "spacebar",//32
+  "page\nup",//33
+  "page\ndown",//34
+  "end",//35
+  "home ",//36
+  "left",//37
+  "up",//36
+  "right",//39
+  "down",//40
+  "select",//41
+  "print",
+  "execute",//43
+  "Print\nScreen",
+  "insert ",//45
+  "delete",
+  "",//47
+  "0",//48
+  "1",//49
+  "2",
+  "3",
+  "4",//52
+  "5",
+  "6",
+  "7",//55
+  "8",
+  "9",//57
+  ":",
+  ";",//59
+  "<",//60
+  "=",//61
+  "",//62
+  "ß",
+  "@",//64
+  "a",
+  "b",//66
+  "c",
+  "d",//68
+  "e",//69
+  "f",
+  "g",//71
+  "h",
+  "i",
+  "j",//74
+  "k",
+  "l",//76
+  "m",
+  "n",//78
+  "o",
+  "p",//80
+  "q",
+  "r",//82
+  "s",
+  "t",//84
+  "u",
+  "v",//86
+  "w",
+  "x",//88
+  "y",
+  "z",//90
+  "Left ⌘",//91
+  "right\nwindow\nkey",
+  "Right ⌘",//93
+  "",//94
+  "",//95
+  "num\n0",
+  "num\n1",//97
+  "num\n2",
+  "num\n3",//99
+  "num\n4",
+  "num\n5",//101
+  "num\n6",
+  "num\n7",//103
+  "num\n8",
+  "num\n9",//105
+  "*",
+  "+",//107
+  "num\n.",
+  "-",//109
+  ".",
+  "/",//111
+  "f1",
+  "f2",//113
+  "f3",
+  "f4",//115
+  "f5",
+  "f6",//117
+  "f7",
+  "f8",//119
+  "f9",
+  "f10",//121
+  "f11",
+  "f12",
+  "f13",//124
+  "f14",
+  "f15",//126
+  "f16",
+  "f17",//128
+  "f18",
+  "f19",//130
+  "f20",
+  "f21",//132
+  "f22",
+  "f23",//134
+  "f24",
+  "",//136
+  "",//137
+  "",//138
+  "",//139
+  "",//140
+  "",//141
+  "",//142
+  "",//143
+  "num\nlock",//144
+  "scroll\nlock",
+  "",//146
+  "",//147
+  "",//148
+  "",//149
+  "",//150
+  "",//151
+  "",//152
+  "",//153
+  "",//154
+  "",//155
+  "",//156
+  "",//157
+  "",//158
+  "",//159
+  "^",
+  "!",//161
+  "#",
+  "$",//163
+  "ù",//164
+  "page\nbackward",//165
+  "page\nforward",//166
+  "",//167
+  "",//168
+  ")",//169
+  "*",//170
+  "~ + * key",//171
+  "",//172
+  "mute/\nunmute",
+  "decrease\nvolume\nlevel",//174
+  "increase\nvolume\nlevel",
+  "next",//176
+  "previous",
+  "stop",//178
+  "play/\npause",
+  "e-mail",//180
+  "mute/\nunmute",
+  "decrease\nvolume",//182
+  "increase\nvolume",//183
+  "",//184
+  "",//185
+  ";",//186
+  "=",//187
+  ",",
+  "-",//189
+  ".",
+  "/",//191
+  "`",//192
+  "?",//193
+  "num .",//194
+  "",//195
+  "",//196
+  "",//197
+  "",//198
+  "",//199
+  "",//200
+  "",//201
+  "",//202
+  "",//203
+  "",//204
+  "",//205
+  "",//206
+  "",//207
+  "",//208
+  "",//209
+  "",//210
+  "",//211
+  "",//212
+  "",//213
+  "",//214
+  "",//215
+  "",//216
+  "",//217
+  "",//218
+  "[",//219
+  "\\",//220
+  "]",
+  "'",//222
+  "`",//223
+  "⌘",//224
+  "altgr",
+  "< /git >",//226
+  "",//227
+  "",//228
+  "",//229
+  "GNOME",//230
+  "ç",
+  "",//232
+  "XF86Forward",
+  "XF86Back",//234
+  "",
+  "",//236
+  "",
+  "",//238
+  "",
+  "alphanumeric",//240
+  "",
+  "hiragana/katakana",//242
+  "half-width/full-width",
+  "kanji",//244
+  "",//245
+  "",//246
+  "",
+  "",//248
+  "",
+  "",//250
+  "",//251
+  "",//252
+  "",//253
+  "none",//254
+  "toggle touchpad"//255
+];
 function setup() {
   createCanvas(900,500);
+	
+	//IMPORTANT: Whenever you add new loads, add one to var pictures in Vars.js
+	Music.intro = loadSound("Intro.mp3", loaded);
+	Music.theme = loadSound("Theme.mp3", loaded);
+	
   title = loadImage("Title.png", loaded);
   fawfulPic = loadImage("Fawful.png", loaded);
   quotePic = loadImage("Quote.png", loaded);
@@ -7,7 +2178,25 @@ function setup() {
   sansPic = loadImage("sans.png", loaded);
   balosPic = loadImage("balos.png", loaded);
 	linkPic = loadImage("link.png", loaded);
-	randomPic = loadImage("random.png", loaded);//IMPORTANT: Whenever you add new loads, add one to var pictures in Vars.js
+	randomPic = loadImage("random.png", loaded);
+	
+	toadPic = loadImage("toad.png", loaded);//toad frames
+	toad0 = loadImage("toad0.png", loaded);
+	toad1 = loadImage("toad1.png", loaded);
+	toad2 = loadImage("toad2.png", loaded);
+	toad3 = loadImage("toad3.png", loaded);
+	toad4 = loadImage("toad4.png", loaded);
+	toad5 = loadImage("toad5.png", loaded);
+	toad6 = loadImage("toad6.png", loaded);
+	toad7 = loadImage("toad7.png", loaded);
+	toad8 = loadImage("toad8.png", loaded);
+	toad9 = loadImage("toad9.png", loaded);
+	toad10 = loadImage("toad10.png", loaded);
+	toad11 = loadImage("toad11.png", loaded);
+	toad12 = loadImage("toad12.png", loaded);
+	toad13 = loadImage("toad13.png", loaded);
+	toad14 = loadImage("toad14.png", loaded);
+	toad15 = loadImage("toad15.png", loaded);//toad frames
 	
 	glitchPic = loadImage("Glitch.png", loaded);//glitch frames
 	glitch1 = loadImage("glitch1.png", loaded);//glitch frames
@@ -73,8 +2262,14 @@ function draw() {
     textAlign(CENTER,CENTER);
     if(loading >= 100){
       menu = 0;
+			Music.intro.play();
     }
   }//Intro
+	if(menu === 0 || menu === 1 || menu === 2 || menu === 6) {
+		if(!Music.theme.isPlaying() && !Music.intro.isPlaying()) {
+			Music.theme.play();
+		}
+	}
   if(menu === 0){//main menu
     //println(fire.length);
     noStroke();
@@ -145,7 +2340,7 @@ function draw() {
     pop();    
     fill(255,255,255);
     textSize(35);
-    text("Version 0.1.3 Pre",450,350);
+    text("Version 0.1.4 Pre",450,350);
     textSize(20);
     text("All characters belong to Nintendo, Studio Pixel, or Toby Fox",450,480);
   }//Main menu
@@ -275,8 +2470,9 @@ function draw() {
     image(balosPic,231,91,78,78);
 		image(linkPic,321,91,78,78);
 		image(randomPic, 411, 91, 78, 78);
+		image(toadPic, 501, 91, 78, 78);
     
-    if(choose.one.x > 230 && choose.one.x < 310 && choose.one.y < 80){
+    /*if(choose.one.x > 230 && choose.one.x < 310 && choose.one.y < 80){
       player[0].character = new Character(fawfulPic);
     }else{
       if(choose.one.x > 320 && choose.one.x < 400 && choose.one.y < 80){
@@ -299,6 +2495,10 @@ function draw() {
 								} else {
 									if(choose.one.x > 410 && choose.one.x < 490 && choose.one.y > 90 && choose.one.y < 170) {
 										player[0].character = new Character(randomPic);
+									} else {
+										if(choose.one.x > 501 && choose.one.x < 581 && choose.one.y > 90 && choose.one.y < 170) {
+											player[0].character = new Character(toadPic);
+										}
 									}
 								}
 							}
@@ -331,6 +2531,10 @@ function draw() {
 								} else {
 									if(choose.two.x > 410 && choose.two.x < 490 && choose.two.y > 90 && choose.two.y < 170) {
 										player[1].character = new Character(randomPic);
+									} else {
+										if(choose.two.x > 501 && choose.two.x < 581 && choose.two.y > 90 && choose.two.y < 170) {
+											player[1].character = new Character(toadPic);
+										}
 									}
 								}
 							}
@@ -363,6 +2567,10 @@ function draw() {
 								} else {
 									if(choose.three.x > 410 && choose.three.x < 490 && choose.three.y > 90 && choose.three.y < 170) {
 										player[2].character = new Character(randomPic);
+									} else {
+										if(choose.three.x > 501 && choose.three.x < 581 && choose.three.y > 90 && choose.three.y < 170) {
+											player[2].character = new Character(toadPic);
+										}
 									}
 								}
 							}
@@ -395,6 +2603,10 @@ function draw() {
 								} else {
 									if(choose.four.x > 410 && choose.four.x < 490 && choose.four.y > 90 && choose.four.y < 170) {
 										player[3].character = new Character(randomPic);
+									} else {
+										if(choose.four.x > 501 && choose.four.x < 581 && choose.four.y > 90 && choose.four.y < 170) {
+											player[3].character = new Character(toadPic);
+										}
 									}
 								}
 							}
@@ -402,7 +2614,7 @@ function draw() {
           }
         }
       }
-    }
+    }*/
     rect(20,290,200,200,10);
     rect(240,290,200,200,10);
     rect(460,290,200,200,10);
@@ -460,15 +2672,25 @@ function draw() {
     }else{
       text("CPU 4",780,470);
     }
-    choose.place = false;
+		if(!mouseIsPressed) {
+    	choose.place = false;
+		}
     //fill(220,130,130);
-		player[0].team.fill();
+		/*player[0].team.fill();
     ellipse(choose.one.x,choose.one.y,50,50);//
+		fill(255);
+		text(1, choose.one.x, choose.one.y);
     if(dist(mouseX,mouseY,choose.one.x,choose.one.y) < 25 && mouseIsPressed && choose.place === false){
-      choose.one.x = mouseX;
-      choose.one.y = mouseY;
+			choose.one.follow = true;
       choose.place = true;
     }
+		if(!mouseIsPressed) {
+			choose.one.follow = false;
+		}
+		if(choose.one.follow) {
+			choose.one.x = mouseX;
+      choose.one.y = mouseY;
+		}
     if(keys[controls[0].up]){
       choose.one.y -= 3;
     }
@@ -492,11 +2714,19 @@ function draw() {
     //fill(130,130,220);
 		player[1].team.fill();
     ellipse(choose.two.x,choose.two.y,50,50);//
+		fill(255);
+		text(2, choose.two.x, choose.two.y);
     if(dist(mouseX,mouseY,choose.two.x,choose.two.y) < 25 && mouseIsPressed && choose.place === false){
-      choose.two.x = mouseX;
-      choose.two.y = mouseY;
+			choose.two.follow = true;
       choose.place = true;
     }
+		if(!mouseIsPressed) {
+			choose.two.follow = false;
+		}
+		if(choose.two.follow) {
+			choose.two.x = mouseX;
+      choose.two.y = mouseY;
+		}
     if(keys[controls[1].up]){
       choose.two.y -= 3;
     }
@@ -512,11 +2742,19 @@ function draw() {
     //fill(130,220,130);
 		player[2].team.fill();
     ellipse(choose.three.x,choose.three.y,50,50);//
+		fill(255);
+		text(3, choose.three.x, choose.three.y);
     if(dist(mouseX,mouseY,choose.three.x,choose.three.y) < 25 && mouseIsPressed && choose.place === false){
-      choose.three.x = mouseX;
-      choose.three.y = mouseY;
+			choose.three.follow = true;
       choose.place = true;
     }
+		if(!mouseIsPressed) {
+			choose.three.follow = false;
+		}
+		if(choose.three.follow) {
+			choose.three.x = mouseX;
+      choose.three.y = mouseY;
+		}
     if(keys[controls[2].up]){
       choose.three.y -= 3;
     }
@@ -532,11 +2770,19 @@ function draw() {
     //fill(220,130,220);
 		player[3].team.fill();
     ellipse(choose.four.x,choose.four.y,50,50);//
+		fill(255);
+		text(4, choose.four.x, choose.four.y);
     if(dist(mouseX,mouseY,choose.four.x,choose.four.y) < 25 && mouseIsPressed && choose.place === false){
-      choose.four.x = mouseX;
-      choose.four.y = mouseY;
+			choose.four.follow = true;
       choose.place = true;
     }
+		if(!mouseIsPressed) {
+			choose.four.follow = false;
+		}
+		if(choose.four.follow) {
+			choose.four.x = mouseX;
+      choose.four.y = mouseY;
+		}
     if(keys[controls[3].up]){
       choose.four.y -= 3;
     }
@@ -548,7 +2794,74 @@ function draw() {
     }
     if(keys[controls[3].right]){
       choose.four.x += 3;
-    }//
+    }*/
+		for(var i = 0;i < choose.p.length;i ++) {
+			player[i].team.fill();
+			ellipse(choose.p[i].x,choose.p[i].y,50,50);//
+			fill(255);
+			text(i+1, choose.p[i].x, choose.p[i].y);
+			if(dist(mouseX,mouseY,choose.p[i].x,choose.p[i].y) < 25 && mouseIsPressed && choose.place === false){
+				choose.p[i].follow = true;
+				choose.place = true;
+			}
+			if(!mouseIsPressed) {
+				choose.p[i].follow = false;
+			}
+			if(choose.p[i].follow) {
+				choose.p[i].x = mouseX;
+				choose.p[i].y = mouseY;
+			}
+			if(keys[controls[i].up]){
+				choose.p[i].y -= 3;
+			}
+			if(keys[controls[i].down]){
+				choose.p[i].y += 3;
+			}
+			if(keys[controls[i].left]){
+				choose.p[i].x -= 3;
+			}
+			if(keys[controls[i].right]){
+				choose.p[i].x += 3;
+			}//
+			choose.p[i].x = constrain(choose.p[i].x, 25, 875);
+			choose.p[i].y = constrain(choose.p[i].y, 25, 475);
+
+			if(choose.p[i].x > 230 && choose.p[i].x < 310 && choose.p[i].y < 80){
+				player[i].character = new Character(fawfulPic);
+			}else{
+				if(choose.p[i].x > 320 && choose.p[i].x < 400 && choose.p[i].y < 80){
+					player[i].character = new Character(quotePic);
+				}else{
+					if(choose.p[i].x > 410 && choose.p[i].x < 490 && choose.p[i].y < 80){
+						player[i].character = new Character(floweyPic);
+					}else{
+						if(choose.p[i].x > 500 && choose.p[i].x < 580 && choose.p[i].y < 80){
+							player[i].character = new Character(glitchPic);
+						}else{
+							if(choose.p[i].x > 590 && choose.p[i].x < 670 && choose.p[i].y < 80){
+								player[i].character = new Character(sansPic);
+							}else{
+								if(choose.p[i].x > 230 && choose.p[i].x < 310 && choose.p[i].y > 90 && choose.p[i].y < 170){
+									player[i].character = new Character(balosPic);
+								} else{
+									if(choose.p[i].x > 320 && choose.p[i].x < 400 && choose.p[i].y > 90 && choose.p[i].y < 170){
+										player[i].character = new Character(linkPic);
+									} else {
+										if(choose.p[i].x > 410 && choose.p[i].x < 490 && choose.p[i].y > 90 && choose.p[i].y < 170) {
+											player[i].character = new Character(randomPic);
+										} else {
+											if(choose.p[i].x > 501 && choose.p[i].x < 581 && choose.p[i].y > 90 && choose.p[i].y < 170) {
+												player[i].character = new Character(toadPic);
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
     if(picCount > 1){
       fill(180,130,50,150);
       rect(0,220,900,60,5);
@@ -583,6 +2896,9 @@ function draw() {
     fill(255,255,255);
     rect(-1,-1,902,502);
     if(pause === false){
+			if(!Music.main.isPlaying()) {
+				Music.main.play();
+			}
       trans.x = 0;
       trans.y = 0;
       trans.count = 0;
@@ -619,13 +2935,17 @@ function draw() {
       for(var i = 0;i < player.length;i ++){
 				if(!player[i].cpu) {
 					if(player[i].character.pic !== undefined && player[i].alive){
+						if(player[i].character.pic === linkPic && hacked) {
+							player[i].damage = 0;
+						}
+						
 						if(player[i].inv > 0){
 							player[i].inv --;
 						}
 						
 						addPic = true;
 						for(var p = 0;p < i;p ++) {
-							if(player[i].team.equals(player[p].team)) {
+							if(player[i].team.equals(player[p].team) && player[p].alive) {
 								addPic = false;
 							}
 						}
@@ -891,6 +3211,9 @@ function draw() {
 			}
     }
     if(pause === true){
+			if(Music.main.isPlaying) {
+				Music.main.stop();
+			}
       fill(100,100,100,200);
       ellipse(350,350,100,100);
       ellipse(550,350,100,100);
@@ -959,6 +3282,8 @@ function draw() {
 					arena = new Arena(setArena(5*u + i));
 					if(mouseIsPressed) {
 						menu = 4;
+						Music.theme.stop();
+						Music.intro.stop();
 					}
 				}
 			}
@@ -1059,26 +3384,28 @@ function mouseClicked(){
       ];*/
       choose = {
         place: true,
-        one: {
+        p: [{
          x: 120,
          y: 380
         },
-        two: {
+        {
           x: 340,
           y: 380
         },
-        three: {
+        {
           x: 560,
           y: 380
         },
-        four: {
+        {
           x: 780,
           y: 380
-        }
+        }]
       }
     }
   }//Main menu
 	if(menu === 5) {
+		Music.intro.play();
+		Music.theme.stop();
 		menu = 0;
 		fire = [];
 	}//End of battle
