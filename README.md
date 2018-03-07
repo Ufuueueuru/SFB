@@ -3,8 +3,9 @@ A clone of the popular game Super Smash Bros is now in the browser! There is als
 Choose a character and fight to win!
 
 # New Update!
-Version 0.1.3 pre has joined the battle!
-Link now has a new attack and there is an arena select!
+Version 0.1.4 pre has joined the battle!
+Sound has been added to Super Smash!
+Toad has joined the battle!
 
 # Note:
 This is a work in progress, but it is functional.
