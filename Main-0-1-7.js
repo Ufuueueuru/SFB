@@ -790,10 +790,10 @@ function draw() {
 					}
 				}
 			}
-		}
 	  if(choose.p[i].x < 30 && choose.p[i].y < 30 && developerMode) {
 				player[i].character = new Character(choochooPic);
 			}
+		}
     if(picCount > 1){
       fill(180,130,50,150);
       rect(0,220,900,60,5);
