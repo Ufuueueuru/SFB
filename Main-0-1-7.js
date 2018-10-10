@@ -728,10 +728,6 @@ function draw() {
 			}
 			choose.p[i].x = constrain(choose.p[i].x, 25, 875);
 			choose.p[i].y = constrain(choose.p[i].y, 25, 475);
-			
-			if(choose.p[i].x < 30 && choose.p[i].y < 30 && developerMode) {
-				player[i].character = new Character(choochooPic);
-			}
 
 			if(choose.p[i].x > 230 && choose.p[i].x < 310 && choose.p[i].y < 80){
 				player[i].character = new Character(fawfulPic);
@@ -795,6 +791,9 @@ function draw() {
 				}
 			}
 		}
+	  if(choose.p[i].x < 30 && choose.p[i].y < 30 && developerMode) {
+				player[i].character = new Character(choochooPic);
+			}
     if(picCount > 1){
       fill(180,130,50,150);
       rect(0,220,900,60,5);
